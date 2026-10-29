@@ -1,0 +1,1518 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#D01219">
+<meta name="robots" content="noindex, nofollow">
+<title>RomiPizza · Demo del sistema</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@600;700&family=Figtree:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+  --red:#D01219; --red-dark:#9E0D13; --red-soft:#FBEDED; --cream:#F6E7C6;
+  --ink:#1E1A17; --ink-2:#3F3933; --muted:#5F574F;
+  --line:#E6E0D6; --line-2:#D9D1C4; --ground:#F7F4EE; --surface:#FFFFFF; --soft:#F1ECE3;
+  --ok-bg:#E3F1E8; --ok:#1F5C3B; --warn-bg:#FFF4DE; --warn:#7A4800; --warn-line:#E8C98A;
+  --info-bg:#E8EEF8; --info:#23436E; --bad-bg:#FBE9E9; --bad:#8A0E14;
+}
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--ground);color:var(--ink);font-family:Figtree,system-ui,-apple-system,"Segoe UI",sans-serif;font-variant-numeric:tabular-nums;-webkit-text-size-adjust:100%}
+button{font:inherit;cursor:pointer;color:inherit}
+input,textarea,select{font:inherit;color:var(--ink)}
+:focus-visible{outline:3px solid #2B6CB0;outline-offset:2px}
+h1{font-family:Fredoka,Figtree,sans-serif;font-weight:600;font-size:28px;margin:0;line-height:1.15}
+h2{font-size:17px;margin:0}
+p{margin:0}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.muted{color:var(--muted)}
+.small{font-size:13px}
+
+/* Banner */
+.banner{background:var(--warn-bg);color:var(--warn);border-bottom:1px solid var(--warn-line);font-size:13px;font-weight:600;padding:6px 16px;display:flex;gap:8px 12px;align-items:center;justify-content:center;flex-wrap:wrap;text-align:center}
+.banner button{background:transparent;border:1px solid var(--warn);color:var(--warn);border-radius:999px;padding:3px 12px;font-size:12px;font-weight:700}
+
+/* Brand */
+.brand{display:flex;align-items:center;gap:10px}
+.brand-name{font-family:Fredoka,Figtree,sans-serif;font-weight:700;font-size:24px;line-height:1;color:var(--cream);display:block}
+.brand-sub{font-size:10px;letter-spacing:3px;color:#fff;display:block;margin-top:3px}
+
+/* Shell */
+.shell{display:flex;min-height:100vh}
+.side{width:236px;flex:none;background:var(--red);color:#fff;padding:20px 14px;display:flex;flex-direction:column;gap:22px;position:sticky;top:0;height:100vh;overflow:auto}
+.nav{display:flex;flex-direction:column;gap:2px}
+.nav-item{display:flex;justify-content:space-between;align-items:center;gap:8px;width:100%;text-align:left;padding:11px 14px;border-radius:10px;border:0;background:transparent;color:#fff;font-size:15px;font-weight:500}
+.nav-item:hover{background:rgba(255,255,255,.14)}
+.nav-item[aria-current="page"]{background:#fff;color:var(--red);font-weight:700}
+.nav-item .soon{font-size:11px;opacity:.9;font-weight:500}
+.badge{background:var(--cream);color:var(--ink);border-radius:999px;padding:1px 8px;font-size:12px;font-weight:700}
+.side-foot{margin-top:auto;border-top:1px solid rgba(255,255,255,.4);padding:14px 6px 0;display:flex;flex-direction:column;gap:8px;font-size:14px}
+.btn-ghost-light{background:transparent;border:1px solid #fff;color:#fff;border-radius:10px;min-height:44px;padding:0 12px;text-align:left;font-weight:600}
+.main{flex:1;min-width:0;padding:20px 24px 40px}
+.mtop{display:none;background:var(--red);color:#fff;padding:10px 14px;align-items:center;justify-content:space-between;gap:12px}
+.mtop .brand-name{font-size:20px}
+.mtop-user{font-size:13px;text-align:right}
+.tabbar{display:none}
+.view-head{display:flex;flex-wrap:wrap;align-items:center;gap:8px 16px;margin-bottom:16px}
+.view-head .right{margin-left:auto}
+
+/* Buttons & fields */
+.btn{min-height:48px;padding:0 18px;border-radius:12px;font-weight:700;font-size:15px;border:0;display:inline-flex;align-items:center;justify-content:center;gap:6px;text-align:center}
+.btn-primary{background:var(--red);color:#fff}
+.btn-primary:hover:not(:disabled){background:var(--red-dark)}
+.btn-dark{background:var(--ink);color:#fff}
+.btn-outline{background:#fff;border:2px solid var(--ink);color:var(--ink)}
+.btn-sm{min-height:44px;font-size:14px;padding:0 14px}
+.btn-lg{min-height:56px;font-size:16px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.btn-text{background:transparent;border:0;color:var(--muted);text-decoration:underline;font-size:14px;min-height:44px;padding:0 6px}
+.link{background:transparent;border:0;color:var(--red-dark);font-weight:700;font-size:14px;min-height:44px;padding:0;text-align:left}
+.field{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);font-weight:600}
+.field input,.field textarea,.field select{height:44px;border:1px solid var(--line-2);border-radius:10px;padding:0 12px;background:#fff;font-size:16px;font-weight:400}
+.field textarea{height:auto;padding:10px 12px;resize:vertical;min-height:64px}
+.seg{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:4px;background:var(--soft);padding:4px;border-radius:12px}
+.seg button{min-height:44px;border:0;border-radius:9px;background:transparent;font-weight:600;font-size:14px;padding:0 4px}
+.seg button[aria-pressed="true"]{background:#fff;font-weight:700;box-shadow:0 1px 3px rgba(0,0,0,.18)}
+.chips{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;margin:12px 0 10px;scrollbar-width:thin}
+.chip{flex:none;min-height:44px;padding:0 16px;border-radius:999px;border:1px solid var(--line-2);background:#fff;font-weight:600;font-size:15px}
+.chip[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px}
+.tag{display:inline-block;font-size:12px;font-weight:700;padding:3px 8px;border-radius:6px;background:var(--soft);color:var(--ink)}
+.tag.pay-pagado{background:var(--ok-bg);color:var(--ok)}
+.tag.pay-pendiente{background:var(--warn-bg);color:var(--warn)}
+.tag.pay-app{background:var(--info-bg);color:var(--info)}
+.tag.pay-devuelto,.tag.st-anulado{background:var(--bad-bg);color:var(--bad)}
+.pill-warn{display:inline-block;background:var(--warn-bg);color:var(--warn);border:1px solid var(--warn-line);border-radius:999px;padding:3px 10px;font-size:12px;font-weight:700}
+.row{display:flex;justify-content:space-between;gap:12px;padding:9px 0;border-bottom:1px solid #EEE8DE;font-size:15px}
+.row:last-child{border-bottom:0}
+.empty{padding:20px;text-align:center;color:var(--muted);font-size:14px}
+
+/* Login */
+.login{min-height:calc(100vh - 34px);display:flex;align-items:center;justify-content:center;padding:24px 16px;background:var(--red)}
+.login-card{background:#fff;border-radius:22px;padding:28px 24px;width:100%;max-width:520px;display:flex;flex-direction:column;gap:18px}
+.login-brand{background:var(--red);border-radius:16px;padding:18px;display:flex;justify-content:center}
+.login-brand .brand-name{font-size:34px}
+.users{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
+.user-btn{min-height:96px;border:1px solid var(--line-2);border-radius:16px;background:#fff;display:flex;flex-direction:column;align-items:flex-start;justify-content:center;gap:4px;padding:14px 16px;text-align:left}
+.user-btn:hover{border-color:var(--ink)}
+.user-btn strong{font-size:18px}
+.pin-dots{display:flex;gap:12px;justify-content:center;margin:4px 0}
+.pin-dots span{width:16px;height:16px;border-radius:50%;border:2px solid var(--ink)}
+.pin-dots span.on{background:var(--ink)}
+.keypad{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.keypad button{min-height:60px;border-radius:14px;border:1px solid var(--line-2);background:#fff;font-size:22px;font-weight:700}
+.err{color:var(--bad);font-weight:700;font-size:14px;min-height:20px}
+
+/* Venta */
+.venta{display:grid;grid-template-columns:minmax(0,1fr) 390px;gap:20px;align-items:start}
+.search input{width:100%;height:48px;border:1px solid var(--line-2);border-radius:12px;padding:0 14px;background:#fff;font-size:16px}
+.pgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:10px}
+.prod{min-height:108px;border:1px solid var(--line);background:#fff;border-radius:14px;padding:12px;display:flex;flex-direction:column;gap:6px;text-align:left}
+.prod:hover{border-color:var(--ink)}
+.prod:active{transform:scale(.98)}
+.prod[hidden]{display:none}
+.prod-name{font-weight:600;font-size:15px;line-height:1.25}
+.prod-desc{font-size:12px;color:var(--muted);line-height:1.3}
+.prod-foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;gap:6px}
+.price{font-weight:700;white-space:nowrap}
+.cart{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto;background:#fff;border:1px solid var(--line);border-radius:16px;padding:16px;display:flex;flex-direction:column;gap:14px}
+.cart-head{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.icon-btn{width:44px;height:44px;border-radius:12px;border:1px solid var(--line-2);background:#fff;display:inline-flex;align-items:center;justify-content:center}
+.only-mobile{display:none}
+.fields{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.fields .span2{grid-column:span 2}
+.check{display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;min-height:44px}
+.check input{width:22px;height:22px;accent-color:var(--red)}
+.lines{list-style:none;margin:0;padding:0;border-top:1px solid var(--line)}
+.line{display:flex;gap:10px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line)}
+.line-main{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px}
+.line-name{font-weight:600;font-size:15px}
+.line-detail{font-size:13px;color:var(--muted)}
+.line-total{font-weight:700;font-size:15px;min-width:72px;text-align:right}
+.qty{display:flex;align-items:center;gap:6px}
+.qty button{width:36px;height:36px;border-radius:10px;border:1px solid var(--line-2);background:#fff;font-size:18px;font-weight:700;line-height:1}
+.qty span{min-width:18px;text-align:center;font-weight:700}
+.total-row{display:flex;justify-content:space-between;font-size:22px;font-weight:700}
+.cart-actions{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.cart-actions.one{grid-template-columns:1fr}
+.cart-fab{display:none}
+
+/* Modal */
+.modal-back{position:fixed;inset:0;background:rgba(30,26,23,.55);display:flex;align-items:center;justify-content:center;padding:16px;z-index:60}
+.modal{background:#fff;border-radius:18px;width:100%;max-width:560px;max-height:calc(100vh - 32px);overflow:auto;padding:20px;display:flex;flex-direction:column;gap:14px;box-shadow:0 18px 48px rgba(0,0,0,.3)}
+.modal-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.modal-foot{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:4px}
+fieldset.og{border:1px solid var(--line);border-radius:14px;padding:12px;margin:0;display:flex;flex-direction:column;gap:8px}
+fieldset.og legend{font-weight:700;padding:0 6px}
+.opts{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:8px}
+.opt{min-height:48px;border-radius:12px;border:1px solid var(--line-2);background:#fff;font-weight:600;padding:0 12px}
+.opt[aria-pressed="true"]{background:var(--ink);color:#fff;border-color:var(--ink)}
+.counter-row{display:flex;align-items:center;gap:8px;border:1px solid var(--line);border-radius:12px;padding:6px 6px 6px 14px;min-height:52px}
+.counter-row span.n{flex:1;font-weight:600}
+.counter-row button{width:40px;height:40px;border-radius:10px;border:1px solid var(--line-2);background:#fff;font-size:20px;font-weight:700}
+.counter-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.pay-total{display:flex;justify-content:space-between;align-items:baseline;background:var(--soft);border-radius:12px;padding:12px 14px;font-size:16px}
+.pay-total strong{font-size:26px}
+.pay-line{display:flex;flex-direction:column;gap:8px;border:1px solid var(--line);border-radius:14px;padding:10px}
+.pay-line-foot{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:15px}
+.cash-box{display:flex;flex-direction:column;gap:8px;background:var(--ok-bg);border-radius:14px;padding:12px}
+.quick{display:flex;gap:6px;flex-wrap:wrap}
+.quick button{min-height:44px;border-radius:10px;border:1px solid var(--line-2);background:#fff;font-weight:700;padding:0 12px}
+.change{font-size:17px}
+.change strong{font-size:22px}
+.status-msg{color:var(--bad);font-weight:700;font-size:14px;min-height:20px}
+
+/* Pedidos */
+.board{display:grid;grid-template-columns:repeat(auto-fit,minmax(270px,1fr));gap:12px;align-items:start}
+.col{background:#EFE9DF;border-radius:16px;padding:12px;display:flex;flex-direction:column;gap:10px}
+.col h2{display:flex;justify-content:space-between;padding:2px 4px}
+.ocard{background:#fff;border:1px solid var(--line);border-radius:14px;padding:14px;display:flex;flex-direction:column;gap:8px}
+.ocard-top{display:flex;justify-content:space-between;align-items:baseline}
+.ocard-top strong{font-size:17px}
+.age{font-size:13px;color:var(--muted);font-weight:600}
+.age.late{color:#B0101A}
+.tags{display:flex;flex-wrap:wrap;gap:6px}
+.ocard-items{font-size:14px;color:var(--ink-2);line-height:1.4}
+.ocard-note{font-size:13px;background:var(--warn-bg);border-radius:8px;padding:6px 8px}
+.ocard-actions{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.table-box{overflow-x:auto;position:relative}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th{text-align:left;color:var(--muted);font-weight:600;padding:8px 6px;white-space:nowrap}
+td{padding:10px 6px;border-top:1px solid #EEE8DE;white-space:nowrap}
+td.num,th.num{text-align:right}
+
+/* Caja */
+.cols{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-start}
+.cols > .wide{flex:999 1 460px;min-width:0;display:flex;flex-direction:column;gap:16px}
+.cols > .narrow{flex:1 1 340px;max-width:100%}
+.arqueo{border:2px solid var(--ink)}
+.den{display:grid;grid-template-columns:minmax(0,1fr) 90px minmax(0,1fr);gap:8px;align-items:center;font-size:15px;padding:3px 0}
+.den input{width:100%;height:44px;border:1px solid var(--line-2);border-radius:8px;padding:0 8px;text-align:right;font-size:16px}
+.den .sub{text-align:right;font-weight:600}
+.diff{display:flex;justify-content:space-between;align-items:center;border-radius:10px;padding:10px 12px;font-weight:700;background:var(--soft)}
+.diff.bad{background:var(--bad-bg);color:var(--bad)}
+.diff.good{background:var(--ok-bg);color:var(--ok)}
+.btn-row{display:flex;flex-wrap:wrap;gap:8px}
+.scroll{max-height:360px;overflow:auto}
+.state-pill{border-radius:999px;padding:4px 12px;font-size:13px;font-weight:700}
+.state-open{background:var(--ok-bg);color:var(--ok)}
+.state-closed{background:var(--bad-bg);color:var(--bad)}
+
+/* Dashboard */
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px}
+.kpi{display:flex;flex-direction:column;gap:6px}
+.kpi-label{font-size:14px;color:var(--muted);font-weight:600}
+.kpi-value{font-family:Fredoka,Figtree,sans-serif;font-weight:600;font-size:27px;line-height:1.1}
+.kpi-sub{font-size:13px;color:var(--muted)}
+.dash-grid{display:flex;flex-wrap:wrap;gap:16px;margin-top:16px}
+.dash-grid > .card{flex:1 1 300px;min-width:0;display:flex;flex-direction:column;gap:12px}
+.dash-grid > .card.big{flex:999 1 520px}
+.legend{display:flex;gap:14px;font-size:13px;color:var(--ink-2);flex-wrap:wrap}
+.legend span{display:inline-flex;align-items:center;gap:6px}
+.legend i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.bars{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));gap:6px;align-items:end}
+.bar-pair{height:190px;display:flex;align-items:flex-end;justify-content:center;gap:3px;border-bottom:1px solid #CFC6B8}
+.bar{width:42%;max-width:22px;border-radius:4px 4px 0 0;min-height:2px}
+.bar.now{background:var(--red)}
+.bar.prev{background:#CFC6B8}
+.bar-x{font-size:12px;color:var(--muted);text-align:center;margin-top:6px}
+.meter{height:8px;background:var(--soft);border-radius:4px;overflow:hidden}
+.meter i{display:block;height:100%;background:var(--ink);border-radius:4px}
+.alert-item{display:flex;flex-direction:column;gap:2px;padding:10px 12px;border-radius:12px;background:var(--warn-bg);border:1px solid var(--warn-line)}
+.alert-item span{font-size:13px;color:#6B4000}
+
+/* Cobro */
+.cobro{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px;align-items:start}
+.cobro-main{display:flex;flex-direction:column;gap:16px;min-width:0}
+.cobro-side{position:sticky;top:12px;display:flex;flex-direction:column;gap:6px}
+.meta-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px}
+.add-row{display:flex;flex-wrap:wrap;gap:10px;align-items:flex-end}
+.add-row .grow{flex:1 1 260px;min-width:0}
+.qty-input{width:64px;height:44px;text-align:center;border:1px solid var(--line-2);border-radius:10px;font-size:16px;background:#fff}
+.price-box{display:flex;flex-direction:column;gap:4px;font-size:13px;color:var(--muted);font-weight:600}
+.price-box strong{height:44px;display:flex;align-items:center;font-size:17px;color:var(--ink);white-space:nowrap}
+.items-table td{vertical-align:middle;white-space:normal}
+.items-table td.desc{min-width:170px}
+.items-table td.code{color:var(--muted);font-size:13px}
+.pay-big{background:var(--red);color:#fff;border-radius:14px;padding:14px 16px;display:flex;flex-direction:column;gap:2px;margin:6px 0}
+.pay-big span{font-size:13px;font-weight:700;letter-spacing:1px}
+.pay-big strong{font-family:Fredoka,Figtree,sans-serif;font-weight:600;font-size:36px;line-height:1.1}
+.disc{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0;border-bottom:1px solid #EEE8DE;font-size:15px}
+.disc input{width:130px;height:40px;border:1px solid var(--line-2);border-radius:8px;padding:0 10px;text-align:right;font-size:16px;background:#fff}
+.disc input:disabled{background:var(--soft)}
+.iva-box{background:var(--soft);border-radius:12px;padding:10px 12px}
+.iva-box .row{font-size:14px;padding:6px 0;border-bottom-color:#E2DBCF}
+.iva-box h3{margin:0 0 4px;font-size:14px}
+.kbd{font-size:11px;font-weight:700;border:1px solid currentColor;border-radius:4px;padding:0 4px;opacity:.85}
+.ticket{font-family:"Courier New",ui-monospace,monospace;font-size:13px;line-height:1.35;background:#fff;color:#000;border:1px dashed var(--line-2);padding:14px;width:100%;max-width:320px;margin:0 auto}
+.t-row{display:flex;justify-content:space-between;gap:8px}
+.t-sep{border-top:1px dashed #000;margin:6px 0}
+.t-center{text-align:center}
+@media (max-width:1100px){.cobro{grid-template-columns:minmax(0,1fr)}.cobro-side{position:static}}
+@media print{
+  body *{visibility:hidden}
+  .ticket,.ticket *{visibility:visible}
+  .ticket{position:fixed;left:0;top:0;width:72mm;max-width:none;border:0}
+}
+
+/* Toast */
+#toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%);background:var(--ink);color:#fff;padding:12px 18px;border-radius:12px;font-weight:600;font-size:15px;z-index:80;opacity:0;pointer-events:none;transition:opacity .2s;max-width:calc(100vw - 32px);text-align:center}
+#toast.show{opacity:1}
+
+@media (max-width:860px){
+  .side{display:none}
+  .mtop{display:flex}
+  .main{padding:14px 14px 100px}
+  h1{font-size:24px}
+  .tabbar{display:flex;position:fixed;left:0;right:0;bottom:0;background:#fff;border-top:1px solid var(--line);z-index:30;padding:6px 6px calc(6px + env(safe-area-inset-bottom));gap:4px}
+  .tabbar button{flex:1;min-height:52px;border:0;background:transparent;font-size:12px;font-weight:700;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;border-radius:10px;color:var(--ink-2)}
+  .tabbar button[aria-current="page"]{color:var(--red);background:var(--red-soft)}
+  .tabbar .tb-badge{background:var(--red);color:#fff;border-radius:999px;padding:0 6px;font-size:11px}
+  .venta{grid-template-columns:minmax(0,1fr)}
+  .cart{position:fixed;inset:0;z-index:50;border-radius:0;max-height:none;display:none;border:0;padding:16px 16px calc(16px + env(safe-area-inset-bottom))}
+  .cart.open{display:flex}
+  .only-mobile{display:inline-flex}
+  .cart-fab{display:flex;position:fixed;left:14px;right:14px;bottom:calc(74px + env(safe-area-inset-bottom));z-index:25;min-height:56px;border:0;border-radius:14px;background:var(--red);color:#fff;font-weight:700;font-size:16px;align-items:center;justify-content:space-between;padding:0 18px;box-shadow:0 8px 20px rgba(0,0,0,.25)}
+  .pgrid{grid-template-columns:repeat(auto-fill,minmax(140px,1fr))}
+  #toast{bottom:150px}
+}
+@media (max-width:600px){
+  .modal-back{padding:0;align-items:flex-end}
+  .modal{border-radius:18px 18px 0 0;max-height:94vh;padding-bottom:calc(20px + env(safe-area-inset-bottom))}
+  .fields{grid-template-columns:1fr}
+  .fields .span2{grid-column:auto}
+}
+</style>
+</head>
+<body>
+<div class="banner" role="note">
+  <span>MODO DEMOSTRACIÓN · datos ficticios · nada de lo que se cargue acá es una venta real</span>
+  <button type="button" data-action="reset-open">Reiniciar demo</button>
+</div>
+<div id="app"></div>
+<div id="modal-root"></div>
+<div id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+
+/* ---------- Utilidades ---------- */
+const LS_KEY = 'romipizza-demo-v2';
+const pad = (n) => String(n).padStart(2, '0');
+const pad4 = (n) => String(n).padStart(4, '0');
+const num = (n) => Math.round(n).toString().replace(/\B(?=(\d{3})+(?!\d))/g, '.');
+const fmt = (n) => (n < 0 ? '− ' : '') + 'Gs ' + num(Math.abs(n));
+const digits = (v) => parseInt(String(v ?? '').replace(/\D/g, ''), 10) || 0;
+const clock = (d) => pad(d.getHours()) + ':' + pad(d.getMinutes());
+const esc = (s) => String(s ?? '').replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+const sum = (arr, f) => arr.reduce((s, x) => s + f(x), 0);
+const demoHour = (d) => { const h = d.getHours(); return (h >= 17 || h === 0) ? h : 22; };
+
+const HAT = '<svg width="34" height="34" viewBox="0 0 34 34" fill="none" stroke="#F6E7C6" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M10 22c-4 0-6-3-6-6s3-6 6-5c1-4 4-6 7-6s6 2 7 6c3-1 6 1 6 5s-2 6-6 6"/><path d="M10 22v6h14v-6"/><path d="M14 13c0-2 1-4 3-4"/></svg>';
+const X_ICON = '<svg width="18" height="18" viewBox="0 0 18 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 4l10 10M14 4L4 14"/></svg>';
+const BRAND = '<div class="brand">' + HAT + '<div><span class="brand-name">RomiPizza</span><span class="brand-sub">ARTESANAL</span></div></div>';
+
+/* ---------- Catálogo (referencia: menú público de PedidosYa) ---------- */
+const CLASICAS_PROMO = ['Mozzarella', 'Jamón y queso', 'Choclo', 'Margarita', 'Salami', 'Catupiry'];
+const ESPECIALES_PROMO = ['Primavera', 'De Lomito', '4 Quesos con lomo', '7 Quesos'];
+const PROTEINA = { id: 'prot', label: 'Elegí la carne', pick: 1, options: ['Carne', 'Pollo', 'Mixto'] };
+const CATS = [
+  { id: 'promos', label: 'Promos' },
+  { id: 'clasicas', label: 'Pizzas clásicas' },
+  { id: 'especiales', label: 'Pizzas especiales' },
+  { id: 'burgers', label: 'Burgers y shawarma' },
+  { id: 'acomp', label: 'Acompañamientos' },
+  { id: 'bebidas', label: 'Bebidas' }
+];
+// iva: tasa contenida en el precio (10, 5 o 0 = exenta). Por defecto 10%: confirmar con el contador.
+const P = (id, cat, name, price, extra) => Object.assign({ id, cat, name, price, iva: 10 }, extra || {});
+const PRODUCTS = [
+  P('promo2c', 'promos', 'Promo 2 Pizzas Clásicas', 85000, { desc: '2 pizzas de 30 cm', groups: [{ id: 'sab', label: 'Elegí 2 sabores', pick: 2, repeat: true, options: CLASICAS_PROMO, pending: true }] }),
+  P('promo2e', 'promos', '2 Especiales + Coca 2 L', 130000, { desc: '2 pizzas especiales y Coca-Cola 2 L', groups: [{ id: 'sab', label: 'Elegí 2 pizzas especiales', pick: 2, repeat: true, options: ESPECIALES_PROMO, pending: true }] }),
+  P('promoburger', 'promos', 'Promo Romiburger', 35000, { desc: 'Romi burguer + Coca 250 ml + papas' }),
+  P('promoshaw', 'promos', 'Shawarma doble especial', 50000, { groups: [PROTEINA] }),
+  P('mozza', 'clasicas', 'Mozzarella', 49000),
+  P('jyq', 'clasicas', 'Jamón y queso', 49000),
+  P('choclo', 'clasicas', 'Choclo', 49000),
+  P('marga', 'clasicas', 'Margarita', 49000),
+  P('salami', 'clasicas', 'Salami', 49000),
+  P('catu', 'clasicas', 'Catupiry', 49000),
+  P('dossab', 'clasicas', '1 pizza dos sabores', 54000, { desc: 'Mitad y mitad', groups: [{ id: 'sab', label: 'Elegí 2 sabores', pick: 2, repeat: false, options: CLASICAS_PROMO, pending: true }] }),
+  P('napo', 'clasicas', 'Napolitana', 59000),
+  P('choccat', 'clasicas', 'Choclo con catupiry', 59000),
+  P('pepe', 'clasicas', 'Pepperoni', 59000),
+  P('full', 'clasicas', 'Romi Full', 68000),
+  P('doblem', 'clasicas', 'Doble mozzarella', 68000),
+  P('pollocat', 'clasicas', 'Pollo con catupiry', 68000),
+  P('mexi', 'clasicas', 'Mexicana', 78000),
+  P('portu', 'clasicas', 'Portuguesa', 78000),
+  P('4q', 'clasicas', '4 Quesos', 78000),
+  P('prima', 'especiales', 'Primavera', 68000),
+  P('lomito', 'especiales', 'Pizza de Lomito', 78000, { groups: [PROTEINA] }),
+  P('4qlomo', 'especiales', '4 Quesos con lomo', 85000),
+  P('7q', 'especiales', '7 Quesos', 85000),
+  P('lomimozza', 'especiales', 'Pizza lomimozza', 95000, { groups: [PROTEINA] }),
+  P('rburger', 'burgers', 'Romi burguer', 23000),
+  P('vburger', 'burgers', 'Vegeburger', 23000),
+  P('rfull', 'burgers', 'RomiBurguer Full', 45000),
+  P('shawarma', 'burgers', 'Shawarma', 30000, { groups: [PROTEINA, { id: 'pic', label: 'Salsa picante', pick: 1, options: ['Sin picante', 'Con picante'] }] }),
+  P('papas', 'acomp', 'Romipapas Rústicas', 35000, { desc: 'Porción para 2 a 3' }),
+  P('cocap', 'bebidas', 'Coca personal', 5000),
+  P('coca5', 'bebidas', 'Coca-Cola 500 ml', 9000),
+  P('cocac', 'bebidas', 'Coca-Cola cero 500 ml', 9000),
+  P('sprite', 'bebidas', 'Sprite cero 500 ml', 9000),
+  P('fanta', 'bebidas', 'Fanta 500 ml', 9000, { groups: [{ id: 'sab', label: 'Sabor', pick: 1, options: ['Naranja', 'Guaraná'] }] }),
+  P('agua', 'bebidas', 'Agua Dasani 1 L', 10000),
+  P('coca1', 'bebidas', 'Coca-Cola 1 L', 12000),
+  P('coca15', 'bebidas', 'Coca-Cola 1,5 L', 18000)
+];
+const prodById = (id) => PRODUCTS.find((p) => p.id === id);
+const codeOf = (id) => pad4(PRODUCTS.findIndex((p) => p.id === id) + 1).slice(1);
+
+const TYPES = { local: 'Local', retiro: 'Retiro', delivery: 'Delivery', pedidosya: 'PedidosYa' };
+const METHODS = { efectivo: 'Efectivo', transferencia: 'Transferencia', tarjeta: 'Tarjeta', qr: 'QR' };
+const STATUS = { prep: 'En preparación', listo: 'Listo', camino: 'En camino', entregado: 'Entregado', anulado: 'Anulado' };
+const USERS = {
+  admin: { key: 'admin', name: 'Dueño', role: 'admin', roleLabel: 'Administrador', pin: '1111' },
+  cajero: { key: 'cajero', name: 'Cajero 1', role: 'cajero', roleLabel: 'Cajero', pin: '2222' }
+};
+const NAV = [
+  { id: 'dashboard', label: 'Dashboard', short: 'Inicio', roles: ['admin'] },
+  { id: 'venta', label: 'Nueva venta', short: 'Venta', roles: ['admin', 'cajero'] },
+  { id: 'cobro', label: 'Cobro', short: 'Cobro', roles: ['admin', 'cajero'] },
+  { id: 'pedidos', label: 'Pedidos', short: 'Pedidos', roles: ['admin', 'cajero'] },
+  { id: 'caja', label: 'Caja', short: 'Caja', roles: ['admin', 'cajero'] },
+  { id: 'inventario', label: 'Inventario', roles: ['admin'], soon: 'Insumos, compras, desperdicios, conteos físicos y alertas de stock mínimo.' },
+  { id: 'productos', label: 'Productos', roles: ['admin'], soon: 'Catálogo único con precios por canal (local y PedidosYa), promos y opciones.' },
+  { id: 'reportes', label: 'Reportes', roles: ['admin'], soon: 'Ventas por día, producto, medio de pago y empleado; historial de cierres; exportación.' },
+  { id: 'usuarios', label: 'Usuarios', roles: ['admin'], soon: 'Empleados, roles y PIN de acceso.' },
+  { id: 'config', label: 'Configuración', roles: ['admin'], soon: 'Datos del local, horarios, medios de pago e impresión de tickets.' }
+];
+const DENOMS = [100000, 50000, 20000, 10000, 5000, 2000];
+const PREV_WEEK = [100, 230, 400, 690, 820, 560, 300, 140].map((x) => x * 1000);
+const HOURS = [17, 18, 19, 20, 21, 22, 23, 0];
+
+/* ---------- Datos de demostración ---------- */
+function newCart() {
+  return { type: 'local', items: [], customer: {}, ruc: '', note: '', appPaid: true, discount: 0, printTicket: true };
+}
+
+function seed() {
+  const now = Date.now();
+  const orders = [];
+  const moves = [{ time: '16:45', type: 'apertura', detail: 'Fondo inicial', who: 'Cajero 1', amount: 200000 }];
+  const menus = [
+    [['Mozzarella', 49000, 1, ''], ['Coca-Cola 500 ml', 9000, 2, '']],
+    [['Promo 2 Pizzas Clásicas', 85000, 1, 'Mozzarella + Catupiry']],
+    [['Romi Full', 68000, 1, ''], ['Coca-Cola 1,5 L', 18000, 1, '']],
+    [['Pizza de Lomito', 78000, 1, 'Mixto']],
+    [['Romi burguer', 23000, 2, ''], ['Romipapas Rústicas', 35000, 1, '']],
+    [['Doble mozzarella', 68000, 1, '']],
+    [['4 Quesos', 78000, 1, ''], ['Coca-Cola 1 L', 12000, 1, '']],
+    [['Promo 2 Pizzas Clásicas', 85000, 1, 'Jamón y queso + Choclo'], ['Coca-Cola 1,5 L', 18000, 1, '']],
+    [['Pepperoni', 59000, 1, '']],
+    [['Shawarma', 30000, 2, 'Pollo · Sin picante']]
+  ];
+  const perHour = [[17, 2], [18, 3], [19, 6], [20, 9], [21, 10], [22, 5]];
+  const types = ['local', 'delivery', 'retiro', 'pedidosya', 'delivery', 'local', 'delivery'];
+  const methods = ['efectivo', 'efectivo', 'transferencia', 'efectivo', 'tarjeta', 'qr', 'efectivo'];
+  const mk = (items) => items.map(([name, price, qty, detail]) => ({ name, price, qty, detail, note: '' }));
+  let n = 101, k = 0;
+  perHour.forEach(([h, c]) => {
+    for (let i = 0; i < c; i++) {
+      const items = mk(menus[k % menus.length]);
+      const total = sum(items, (it) => it.price * it.qty);
+      const type = types[k % types.length];
+      const time = pad(h) + ':' + pad(Math.floor((i + 0.5) * 60 / c));
+      let pay = 'app', payments = [];
+      if (type !== 'pedidosya') {
+        const m = methods[k % methods.length];
+        pay = 'pagado';
+        payments = [{ method: m, amount: total }];
+        if (m === 'efectivo') moves.push({ time, type: 'cobro', detail: 'Pedido #' + pad4(n), who: 'Cajero 1', amount: total });
+      }
+      orders.push({ id: 's' + n, num: n, type, customer: { name: 'Cliente demo' }, items, total, note: '', status: 'entregado', pay, payments, createdAt: null, time, hour: h, by: 'Cajero 1' });
+      n++; k++;
+    }
+  });
+  moves.push({ time: '19:05', type: 'gasto', detail: 'Hielo y servilletas', who: 'Cajero 1', amount: -45000 });
+  moves.push({ time: '21:30', type: 'retiro', detail: 'Retiro del dueño', who: 'Dueño', amount: -300000 });
+  orders.push({ id: 's136', num: 136, type: 'delivery', customer: { name: 'Cliente demo' }, items: mk([['Mozzarella', 49000, 1, '']]), total: 49000, note: '', status: 'anulado', pay: 'pendiente', payments: [], createdAt: null, time: '22:20', hour: 22, by: 'Cajero 1', cancelReason: 'El cliente canceló' });
+
+  const active = [
+    [137, 'retiro', [['1 pizza dos sabores', 54000, 1, 'Mozzarella + Choclo']], 'prep', 15, 'efectivo', 'Cliente demo', ''],
+    [138, 'delivery', [['Mexicana', 78000, 1, ''], ['4 Quesos', 78000, 1, '']], 'prep', 24, null, 'Cliente demo · Lambaré', 'Tocar timbre'],
+    [139, 'local', [['Mozzarella', 49000, 2, ''], ['Coca-Cola 500 ml', 9000, 2, '']], 'prep', 12, 'tarjeta', 'Mesa afuera', ''],
+    [140, 'pedidosya', [['Promo Romiburger', 35000, 1, '']], 'listo', 26, 'app', 'PedidosYa demo', ''],
+    [141, 'pedidosya', [['Romi Full', 68000, 1, ''], ['Romipapas Rústicas', 35000, 1, '']], 'prep', 3, 'app', 'PedidosYa demo', ''],
+    [142, 'delivery', [['Pizza lomimozza', 95000, 1, 'Carne'], ['Coca-Cola 1 L', 12000, 1, '']], 'camino', 34, null, 'Cliente demo · Lambaré', '']
+  ];
+  active.forEach(([num, type, its, status, mins, method, name, note]) => {
+    const items = mk(its);
+    const total = sum(items, (it) => it.price * it.qty);
+    const created = new Date(now - mins * 60000);
+    let pay = 'pendiente', payments = [];
+    if (method === 'app') pay = 'app';
+    else if (method) {
+      pay = 'pagado';
+      payments = [{ method, amount: total }];
+      if (method === 'efectivo') moves.push({ time: clock(created), type: 'cobro', detail: 'Pedido #' + pad4(num), who: 'Cajero 1', amount: total });
+    }
+    orders.push({ id: 's' + num, num, type, customer: { name }, items, total, note, status, pay, payments, createdAt: created.getTime(), time: clock(created), hour: 22, by: 'Cajero 1' });
+  });
+
+  return {
+    user: null,
+    orders,
+    cash: { status: 'abierta', openedAt: '16:45', openedBy: 'Cajero 1', moves },
+    closes: [],
+    log: [
+      { time: '18:10', what: 'Desperdicio · mozzarella 0,4 kg', who: 'Cajero 1 · pizza quemada' },
+      { time: '19:05', what: 'Gasto en efectivo · Gs 45.000', who: 'Cajero 1 · hielo y servilletas' },
+      { time: '21:30', what: 'Retiro de caja · Gs 300.000', who: 'Dueño' },
+      { time: '22:20', what: 'Anulación del pedido #0136 · Gs 49.000', who: 'Cajero 1 · el cliente canceló' }
+    ],
+    nextNum: 143,
+    cart: newCart()
+  };
+}
+
+function load() { try { const r = localStorage.getItem(LS_KEY); return r ? JSON.parse(r) : null; } catch (e) { return null; } }
+function save() { try { localStorage.setItem(LS_KEY, JSON.stringify(S)); } catch (e) { /* sin almacenamiento: la demo sigue en memoria */ } }
+
+let S = load() || seed();
+const UI = { view: null, cat: 'promos', q: '', cartOpen: false, filter: 'todos', modal: null, arqueo: {}, aqReason: '', openFondo: '200000', cobroSel: 'mozza', cobroQty: '1' };
+
+/* ---------- Reglas de negocio de la demo ---------- */
+const isActive = (o) => ['prep', 'listo', 'camino'].includes(o.status);
+const goesOut = (o) => o.type === 'delivery' || o.type === 'pedidosya';
+const cartGross = () => sum(S.cart.items, (it) => it.price * it.qty);
+const cartTotal = () => cartGross() - (S.cart.discount || 0);
+
+/*
+ * IVA en Paraguay: los precios al público YA incluyen el impuesto, así que el total
+ * a pagar no cambia; el IVA se "liquida" (desglosa) dentro del total.
+ *   IVA 10% contenido = monto gravado al 10% ÷ 11
+ *   IVA 5%  contenido = monto gravado al 5%  ÷ 21
+ * Un descuento reduce cada base en la misma proporción. Se redondea a guaraníes enteros.
+ */
+function ivaBreakdown(items, discount) {
+  const gross = sum(items, (it) => it.price * it.qty);
+  const disc = Math.min(Math.max(discount || 0, 0), gross);
+  const f = gross ? (gross - disc) / gross : 1;
+  const base = { 0: 0, 5: 0, 10: 0 };
+  items.forEach((it) => { base[it.iva ?? 10] += it.price * it.qty * f; });
+  const total = gross - disc;
+  const g10 = Math.round(base[10]);
+  const g5 = Math.round(base[5]);
+  const ex = total - g10 - g5;
+  const iva10 = Math.round(g10 / 11);
+  const iva5 = Math.round(g5 / 21);
+  return { gross, discount: disc, total, ex, g5, g10, iva5, iva10, ivaTotal: iva5 + iva10 };
+}
+const cashExpected = () => sum(S.cash.moves, (m) => m.amount);
+const isAdmin = () => S.user && S.user.role === 'admin';
+
+function addMove(type, detail, amount) {
+  S.cash.moves.push({ time: clock(new Date()), type, detail, who: S.user.name, amount });
+}
+function logEv(what, extra) {
+  S.log.push({ time: clock(new Date()), what, who: S.user.name + (extra ? ' · ' + extra : '') });
+}
+function registerCash(o, payments) {
+  payments.filter((p) => p.method === 'efectivo').forEach((p) => addMove('cobro', 'Pedido #' + pad4(o.num), p.amount));
+}
+function payText(o) {
+  if (o.pay === 'pagado') return 'Pagado · ' + o.payments.map((p) => METHODS[p.method]).join(' + ');
+  return { pendiente: 'Cobro pendiente', app: 'Pagado en app', devuelto: 'Devuelto' }[o.pay] || o.pay;
+}
+function itemsText(o) {
+  return o.items.map((it) => (it.qty > 1 ? it.qty + '× ' : '') + it.name + (it.detail ? ' (' + it.detail + ')' : '')).join(' · ');
+}
+function age(o) {
+  if (!o.createdAt) return o.time;
+  const m = Math.max(0, Math.floor((Date.now() - o.createdAt) / 60000));
+  return m < 1 ? 'recién' : 'hace ' + m + ' min';
+}
+
+function createOrder(payments, change) {
+  const c = S.cart;
+  const iva = ivaBreakdown(c.items, c.discount);
+  const now = new Date();
+  let pay = 'pendiente';
+  if (payments) pay = 'pagado';
+  else if (c.type === 'pedidosya' && c.appPaid) pay = 'app';
+  const o = {
+    id: 'o' + now.getTime(), num: S.nextNum++, type: c.type, customer: Object.assign({}, c.customer),
+    items: c.items.map((it) => ({ name: it.name, detail: it.detail, note: it.note, qty: it.qty, price: it.price, iva: it.iva ?? 10 })),
+    total: iva.total, discount: iva.discount, iva, ruc: c.ruc || '', change: change || 0,
+    note: c.note, status: 'prep', pay, payments: payments || [],
+    createdAt: now.getTime(), time: clock(now), hour: demoHour(now), by: S.user.name
+  };
+  S.orders.push(o);
+  if (payments) registerCash(o, payments);
+  if (iva.discount) logEv('Descuento en pedido #' + pad4(o.num) + ' · ' + fmt(iva.discount));
+  S.cart = newCart();
+  UI.cartOpen = false;
+  save();
+  toast('Pedido #' + pad4(o.num) + (payments ? ' cobrado y confirmado' : ' confirmado · cobro pendiente') + (change ? ' · vuelto ' + fmt(change) : ''));
+  return o;
+}
+
+/* ---------- Render ---------- */
+function render() {
+  const app = document.getElementById('app');
+  if (!S.user) {
+    app.innerHTML = renderLogin();
+  } else {
+    const allowed = NAV.filter((n) => n.roles.includes(S.user.role)).map((n) => n.id);
+    if (!UI.view || !allowed.includes(UI.view)) UI.view = isAdmin() ? 'dashboard' : 'venta';
+    app.innerHTML = renderShell();
+    if (UI.view === 'venta') applyProductFilter();
+    if (UI.view === 'caja' && S.cash.status === 'abierta') updateArqueo();
+  }
+  renderModal();
+}
+
+function renderLogin() {
+  return `
+  <div class="login">
+    <div class="login-card">
+      <div class="login-brand">${BRAND}</div>
+      <h1>¿Quién usa el sistema?</h1>
+      <div class="users">
+        <button type="button" class="user-btn" data-action="login-pick" data-user="admin"><strong>Dueño</strong><span class="muted">Administrador · ve todo</span></button>
+        <button type="button" class="user-btn" data-action="login-pick" data-user="cajero"><strong>Cajero 1</strong><span class="muted">Cajero · venta, pedidos y caja</span></button>
+      </div>
+      <p class="muted small">PIN de demostración: Dueño <strong>1111</strong> · Cajero <strong>2222</strong></p>
+      <p class="small">Para probar: cargá un pedido, cobralo, movelo en Pedidos y al final cerrá la caja. Probá entrar con cada usuario para ver qué cambia.</p>
+    </div>
+  </div>`;
+}
+
+function renderShell() {
+  const u = S.user;
+  const items = NAV.filter((n) => n.roles.includes(u.role));
+  const inProg = S.orders.filter(isActive).length;
+  const cartN = sum(S.cart.items, (it) => it.qty);
+  const navHtml = items.map((n) => `
+    <button type="button" class="nav-item" data-action="nav" data-view="${n.id}" ${UI.view === n.id ? 'aria-current="page"' : ''}>
+      <span>${n.label}</span>
+      ${n.id === 'pedidos' && inProg ? `<span class="badge">${inProg}</span>` : ''}
+      ${n.id === 'cobro' && cartN ? `<span class="badge">${cartN}</span>` : ''}
+      ${n.soon ? '<span class="soon">próximamente</span>' : ''}
+    </button>`).join('');
+  const tabs = items.filter((n) => !n.soon).map((n) => `
+    <button type="button" data-action="nav" data-view="${n.id}" ${UI.view === n.id ? 'aria-current="page"' : ''}>
+      <span>${n.short}</span>${n.id === 'pedidos' && inProg ? `<span class="tb-badge">${inProg}</span>` : ''}${n.id === 'cobro' && cartN ? `<span class="tb-badge">${cartN}</span>` : ''}
+    </button>`).join('');
+  const views = { dashboard: renderDashboard, venta: renderVenta, cobro: renderCobro, pedidos: renderPedidos, caja: renderCaja };
+  const view = (views[UI.view] || renderSoon)();
+  return `
+  <div class="shell">
+    <aside class="side">
+      <div style="padding:0 6px">${BRAND}</div>
+      <nav class="nav" aria-label="Menú principal">${navHtml}</nav>
+      <div class="side-foot">
+        <span><strong>${esc(u.name)}</strong><br>${u.roleLabel}</span>
+        <button type="button" class="btn-ghost-light" data-action="logout">Cambiar usuario</button>
+      </div>
+    </aside>
+    <div style="flex:1;min-width:0;display:flex;flex-direction:column">
+      <div class="mtop">${BRAND}<div class="mtop-user"><strong>${esc(u.name)}</strong><br><button type="button" class="btn-text" style="color:#fff;min-height:32px" data-action="logout">Cambiar usuario</button></div></div>
+      <main class="main" id="main">${view}</main>
+    </div>
+  </div>
+  <nav class="tabbar" aria-label="Menú principal">${tabs}</nav>`;
+}
+
+function renderSoon() {
+  const n = NAV.find((x) => x.id === UI.view);
+  return `
+  <div class="view-head"><h1>${n.label}</h1></div>
+  <div class="card" style="max-width:640px;display:flex;flex-direction:column;gap:10px">
+    <span class="pill-warn" style="align-self:flex-start">Se define en la próxima reunión</span>
+    <p>${n.soon}</p>
+    <p class="muted small">Esta sección no está en la demo a propósito: primero queremos entender cómo trabajan hoy.</p>
+  </div>`;
+}
+
+/* Venta */
+function renderVenta() {
+  const cats = CATS.map((c) => `<button type="button" class="chip" data-action="cat" data-cat="${c.id}" aria-pressed="${UI.cat === c.id}">${c.label}</button>`).join('');
+  const prods = PRODUCTS.map((p) => `
+    <button type="button" class="prod" data-action="pick" data-id="${p.id}" data-cat="${p.cat}" data-name="${esc(p.name.toLowerCase())}">
+      <span class="prod-name">${esc(p.name)}</span>
+      ${p.desc ? `<span class="prod-desc">${esc(p.desc)}</span>` : ''}
+      <span class="prod-foot"><span class="price">${fmt(p.price)}</span>${p.groups ? '<span class="tag">opciones</span>' : ''}</span>
+    </button>`).join('');
+  const n = sum(S.cart.items, (it) => it.qty);
+  return `
+  <div class="venta">
+    <section aria-label="Catálogo">
+      <div class="view-head"><h1>Nueva venta</h1><span class="muted small right">Precios de referencia: PedidosYa</span></div>
+      <label class="search"><span class="sr">Buscar producto</span><input type="search" data-input="search" placeholder="Buscar producto…" value="${esc(UI.q)}" autocomplete="off"></label>
+      <div class="chips" role="group" aria-label="Categorías">${cats}</div>
+      <div class="pgrid" id="pgrid">${prods}</div>
+      <p class="empty" id="noresults" hidden>No hay productos con ese nombre.</p>
+    </section>
+    <aside class="cart ${UI.cartOpen ? 'open' : ''}" aria-label="Pedido actual">${renderCart()}</aside>
+    ${n ? `<button type="button" class="cart-fab" data-action="cart-open"><span>Ver pedido · ${n} ${n === 1 ? 'ítem' : 'ítems'}</span><span>${fmt(cartTotal())}</span></button>` : ''}
+  </div>`;
+}
+
+function applyProductFilter() {
+  const q = UI.q.trim().toLowerCase();
+  let shown = 0;
+  document.querySelectorAll('#pgrid .prod').forEach((el) => {
+    const ok = q ? el.dataset.name.includes(q) : el.dataset.cat === UI.cat;
+    el.hidden = !ok;
+    if (ok) shown++;
+  });
+  const nr = document.getElementById('noresults');
+  if (nr) nr.hidden = shown > 0;
+}
+
+function renderCart() {
+  const c = S.cart;
+  const total = cartTotal();
+  const f = (field, label, type, cls) => `<label class="field ${cls || ''}">${label}<input type="${type || 'text'}" data-input="cust" data-field="${field}" value="${esc(c.customer[field])}" autocomplete="off"></label>`;
+  const fields = {
+    local: f('name', 'Mesa o nombre', 'text', 'span2'),
+    retiro: f('name', 'Nombre') + f('phone', 'Teléfono', 'tel'),
+    delivery: f('name', 'Nombre') + f('phone', 'Teléfono', 'tel') + f('addr', 'Dirección y referencia', 'text', 'span2'),
+    pedidosya: f('code', 'Código PedidosYa') + f('name', 'Nombre')
+  }[c.type];
+  const hints = {
+    local: 'Si pagan al final, confirmá sin cobrar y cobrá desde Pedidos.',
+    retiro: 'Normalmente se cobra al hacer el pedido.',
+    delivery: 'Si cobra el repartidor, confirmá ahora y cobrá cuando vuelva.',
+    pedidosya: c.appPaid ? 'Pagado en la app: no entra al cajón. PedidosYa lo liquida aparte.' : 'El repartidor cobra en efectivo al entregar.'
+  }[c.type];
+  const lines = c.items.length ? c.items.map((it, i) => `
+    <li class="line">
+      <div class="line-main"><span class="line-name">${esc(it.name)}</span>${it.detail ? `<span class="line-detail">${esc(it.detail)}</span>` : ''}${it.note ? `<span class="line-detail">Nota: ${esc(it.note)}</span>` : ''}</div>
+      <div class="qty"><button type="button" data-action="cart-dec" data-i="${i}" aria-label="Quitar uno de ${esc(it.name)}">−</button><span>${it.qty}</span><button type="button" data-action="cart-inc" data-i="${i}" aria-label="Agregar uno de ${esc(it.name)}">+</button></div>
+      <span class="line-total">${num(it.price * it.qty)}</span>
+    </li>`).join('') : '<li class="empty">Tocá un producto para agregarlo.</li>';
+  const appPaid = c.type === 'pedidosya' && c.appPaid;
+  return `
+    <div class="cart-head"><h2>Pedido #${pad4(S.nextNum)}</h2><button type="button" class="icon-btn only-mobile" data-action="cart-close" aria-label="Volver al catálogo">${X_ICON}</button></div>
+    <div class="seg" role="group" aria-label="Tipo de pedido">${Object.entries(TYPES).map(([k, v]) => `<button type="button" data-action="type" data-type="${k}" aria-pressed="${c.type === k}">${v}</button>`).join('')}</div>
+    <div class="fields">${fields}</div>
+    ${c.type === 'pedidosya' ? `<label class="check"><input type="checkbox" data-input="app-paid" ${c.appPaid ? 'checked' : ''}>Ya está pagado en la app</label>` : ''}
+    <ul class="lines">${lines}</ul>
+    <label class="field">Nota del pedido<textarea data-input="cart-note" rows="2" placeholder="Ej: bien cocida">${esc(c.note)}</textarea></label>
+    ${c.discount ? `<div class="row"><span>Descuento</span><span>− ${fmt(c.discount)}</span></div>` : ''}
+    <div class="total-row"><span>Total</span><span>${fmt(total)}</span></div>
+    <p class="muted small">${hints}</p>
+    <div class="cart-actions ${appPaid ? 'one' : ''}">
+      <button type="button" class="btn btn-outline btn-lg" data-action="confirm-order" ${c.items.length ? '' : 'disabled'}>Confirmar pedido</button>
+      ${appPaid ? '' : `<button type="button" class="btn btn-primary btn-lg" data-action="nav" data-view="cobro" ${c.items.length ? '' : 'disabled'}>Cobrar</button>`}
+    </div>`;
+}
+
+/* Cobro: comprobante con lista de productos, cantidades e IVA desglosado */
+function renderCobro() {
+  const c = S.cart;
+  const b = ivaBreakdown(c.items, c.discount);
+  const now = new Date();
+  const fecha = pad(now.getDate()) + '/' + pad(now.getMonth() + 1) + '/' + now.getFullYear() + ' ' + clock(now);
+  const opts = CATS.map((cat) => `<optgroup label="${cat.label}">${PRODUCTS.filter((p) => p.cat === cat.id).map((p) => `<option value="${p.id}" ${UI.cobroSel === p.id ? 'selected' : ''}>${codeOf(p.id)} · ${esc(p.name)}</option>`).join('')}</optgroup>`).join('');
+  const sel = prodById(UI.cobroSel) || PRODUCTS[0];
+  const count = sum(c.items, (it) => it.qty);
+  const rows = c.items.map((it, i) => `
+    <tr>
+      <td>${i + 1}</td>
+      <td class="code">${codeOf(it.pid)}</td>
+      <td class="desc"><strong style="font-weight:600">${esc(it.name)}</strong>${it.detail ? `<br><span class="muted small">${esc(it.detail)}</span>` : ''}${it.note ? `<br><span class="muted small">Nota: ${esc(it.note)}</span>` : ''}</td>
+      <td><div class="qty"><button type="button" data-action="cart-dec" data-i="${i}" aria-label="Quitar uno de ${esc(it.name)}">−</button><span>${it.qty}</span><button type="button" data-action="cart-inc" data-i="${i}" aria-label="Agregar uno de ${esc(it.name)}">+</button></div></td>
+      <td class="num">${num(it.price)}</td>
+      <td class="num">${(it.iva ?? 10) ? (it.iva ?? 10) + '%' : 'Exenta'}</td>
+      <td class="num"><strong>${num(it.price * it.qty)}</strong></td>
+      <td><button type="button" class="icon-btn" data-action="cart-remove" data-i="${i}" aria-label="Quitar ${esc(it.name)} del comprobante">${X_ICON}</button></td>
+    </tr>`).join('');
+  const appPaid = c.type === 'pedidosya' && c.appPaid;
+  return `
+  <div class="view-head">
+    <h1>Cobro</h1>
+    <span class="tag">Venta #${pad4(S.nextNum)}</span>
+    <span class="muted small right">${fecha} · ${esc(S.user.name)} · Caja 1 ${S.cash.status === 'abierta' ? 'abierta' : '<strong style="color:var(--bad)">cerrada</strong>'}</span>
+  </div>
+  <div class="cobro">
+    <div class="cobro-main">
+      <section class="card" aria-labelledby="h-cli">
+        <h2 id="h-cli" style="margin-bottom:10px">Datos del comprobante</h2>
+        <div class="meta-grid">
+          <label class="field">Cliente<input type="text" data-input="cust" data-field="name" value="${esc(c.customer.name)}" placeholder="Sin nombre" autocomplete="off"></label>
+          <label class="field">RUC o CI<input type="text" data-input="ruc" value="${esc(c.ruc)}" placeholder="Opcional" autocomplete="off"></label>
+          <label class="field">Tipo de pedido<select data-input="cobro-type">${Object.entries(TYPES).map(([k, v]) => `<option value="${k}" ${c.type === k ? 'selected' : ''}>${v}</option>`).join('')}</select></label>
+          <label class="field">Condición<select disabled><option>Contado</option></select></label>
+        </div>
+        <div style="display:flex;flex-wrap:wrap;gap:4px 20px;margin-top:6px">
+          <label class="check"><input type="checkbox" data-input="print-ticket" ${c.printTicket ? 'checked' : ''}>Imprimir ticket al cobrar</label>
+          ${c.type === 'pedidosya' ? `<label class="check"><input type="checkbox" data-input="app-paid" ${c.appPaid ? 'checked' : ''}>Ya está pagado en la app</label>` : ''}
+        </div>
+      </section>
+
+      <section class="card" aria-labelledby="h-add">
+        <h2 id="h-add" style="margin-bottom:10px">Agregar producto</h2>
+        <div class="add-row">
+          <label class="field grow">Producto<select data-input="cobro-sel" id="cobro-sel">${opts}</select></label>
+          <div class="field"><span>Cantidad</span><div class="qty"><button type="button" data-action="cobro-qty-dec" aria-label="Menos">−</button><input class="qty-input" type="text" inputmode="numeric" data-input="cobro-qty" value="${esc(UI.cobroQty)}" aria-label="Cantidad"><button type="button" data-action="cobro-qty-inc" aria-label="Más">+</button></div></div>
+          <div class="price-box"><span>Precio</span><strong id="cobro-price">${fmt(sel.price)}</strong></div>
+          <button type="button" class="btn btn-dark" data-action="cobro-add">Agregar</button>
+        </div>
+        <p class="muted small" style="margin-top:8px">El precio sale del catálogo: solo se eligen productos y cantidades.</p>
+      </section>
+
+      <section class="card" aria-labelledby="h-items">
+        <h2 id="h-items" style="margin-bottom:8px">Detalle · ${count} ${count === 1 ? 'ítem' : 'ítems'}</h2>
+        <div class="table-box">
+          <table class="items-table">
+            <thead><tr><th>#</th><th>Código</th><th>Descripción</th><th>Cant.</th><th class="num">Precio unit.</th><th class="num">IVA</th><th class="num">Total</th><th><span class="sr">Quitar</span></th></tr></thead>
+            <tbody>${rows || '<tr><td colspan="8" class="empty">Todavía no hay productos. Agregalos acá o desde Nueva venta.</td></tr>'}</tbody>
+          </table>
+        </div>
+        <label class="field" style="margin-top:12px">Observaciones<textarea data-input="cart-note" rows="2" placeholder="Ej: bien cocida">${esc(c.note)}</textarea></label>
+      </section>
+    </div>
+
+    <aside class="card cobro-side" aria-label="Totales">
+      <div class="row"><span>Ítems</span><strong>${count}</strong></div>
+      <div class="row"><span>Subtotal</span><strong>${fmt(b.gross)}</strong></div>
+      <label class="disc"><span>Descuento (Gs)</span><input type="text" inputmode="numeric" data-input="discount" value="${c.discount || ''}" placeholder="0" ${isAdmin() ? '' : 'disabled'}></label>
+      ${isAdmin() ? '' : '<p class="muted small">Solo el administrador aplica descuentos.</p>'}
+      <div class="pay-big"><span>TOTAL A PAGAR</span><strong>${fmt(b.total)}</strong></div>
+      <div class="iva-box">
+        <h3>Liquidación del IVA</h3>
+        <div class="row"><span>Exentas</span><span>${fmt(b.ex)}</span></div>
+        <div class="row"><span>Gravadas 5%</span><span>${fmt(b.g5)}</span></div>
+        <div class="row"><span>Gravadas 10%</span><span>${fmt(b.g10)}</span></div>
+        <div class="row"><span>IVA 5%</span><span>${fmt(b.iva5)}</span></div>
+        <div class="row"><span>IVA 10%</span><span>${fmt(b.iva10)}</span></div>
+        <div class="row"><strong>Total IVA</strong><strong>${fmt(b.ivaTotal)}</strong></div>
+      </div>
+      <p class="muted small">Los precios ya incluyen IVA: se desglosa, no se suma. IVA 10% = gravado ÷ 11 · IVA 5% = gravado ÷ 21. Tasas por producto a confirmar con el contador.</p>
+      <button type="button" class="btn btn-primary btn-lg" data-action="cobro-process" ${c.items.length ? '' : 'disabled'}>${appPaid ? 'Confirmar (pagado en app)' : 'Cobrar'} <span class="kbd">F9</span></button>
+      ${appPaid ? '' : `<button type="button" class="btn btn-outline btn-sm" data-action="confirm-order" ${c.items.length ? '' : 'disabled'}>Confirmar sin cobrar (cobra al entregar)</button>`}
+      <button type="button" class="btn-text" data-action="cobro-clear-open" ${c.items.length ? '' : 'disabled'}>Cancelar venta <span class="kbd">F3</span></button>
+    </aside>
+  </div>`;
+}
+
+/* Pedidos */
+function advLabel(o) {
+  if (o.status === 'prep') return 'Marcar listo';
+  if (o.status === 'listo' && goesOut(o)) return 'Despachar';
+  if (o.pay === 'pendiente') return o.status === 'camino' ? 'Cobrar y confirmar entrega' : 'Cobrar y entregar';
+  return o.status === 'camino' ? 'Confirmar entrega' : 'Entregar';
+}
+function renderPedidos() {
+  const match = (o) => UI.filter === 'todos' || o.type === UI.filter;
+  const active = S.orders.filter((o) => isActive(o) && match(o));
+  const counts = { todos: S.orders.filter(isActive).length };
+  Object.keys(TYPES).forEach((t) => { counts[t] = S.orders.filter((o) => isActive(o) && o.type === t).length; });
+  const filters = [['todos', 'Todos']].concat(Object.entries(TYPES)).map(([k, v]) => `<button type="button" class="chip" data-action="filter" data-f="${k}" aria-pressed="${UI.filter === k}">${v} · ${counts[k]}</button>`).join('');
+  const card = (o) => {
+    const late = o.status === 'prep' && o.createdAt && (Date.now() - o.createdAt) > 20 * 60000;
+    const who = [o.customer.name, o.customer.code ? 'PY ' + o.customer.code : '', o.customer.addr].filter(Boolean).map(esc).join(' · ');
+    return `
+    <article class="ocard">
+      <div class="ocard-top"><strong>#${pad4(o.num)}</strong><span class="age ${late ? 'late' : ''}">${late ? 'Demorado · ' : ''}${age(o)}</span></div>
+      <div class="tags"><span class="tag">${TYPES[o.type]}</span><span class="tag pay-${o.pay}">${payText(o)}</span></div>
+      <p class="ocard-items">${esc(itemsText(o))}</p>
+      ${who ? `<p class="muted small">${who}</p>` : ''}
+      ${o.note ? `<p class="ocard-note">Nota: ${esc(o.note)}</p>` : ''}
+      <p class="small" style="font-weight:700">${fmt(o.total)}</p>
+      <div class="ocard-actions">
+        <button type="button" class="btn btn-outline btn-sm" data-action="adv" data-id="${o.id}">${advLabel(o)}</button>
+        <button type="button" class="btn-text" data-action="cancel-open" data-id="${o.id}">Anular</button>
+      </div>
+    </article>`;
+  };
+  const col = (st, title, hint) => {
+    const list = active.filter((o) => o.status === st);
+    return `<section class="col" aria-label="${title}"><h2><span>${title}</span><span class="muted">${list.length}</span></h2>${list.length ? list.map(card).join('') : `<p class="empty">${hint}</p>`}</section>`;
+  };
+  const done = S.orders.filter((o) => !isActive(o) && match(o)).slice().reverse();
+  const hist = done.map((o) => `<tr><td>#${pad4(o.num)}</td><td>${o.time}</td><td>${TYPES[o.type]}</td><td>${esc(itemsText(o))}</td><td><span class="tag ${o.status === 'anulado' ? 'st-anulado' : 'pay-' + o.pay}">${o.status === 'anulado' ? 'Anulado' : payText(o)}</span></td><td class="num">${fmt(o.total)}</td></tr>`).join('');
+  return `
+  <div class="view-head"><h1>Pedidos en curso</h1><button type="button" class="btn btn-primary right" data-action="nav" data-view="venta">+ Nueva venta</button></div>
+  <p class="muted small" style="margin:-8px 0 8px">La caja actualiza los estados. Los entregados pasan al historial.</p>
+  <div class="chips" role="group" aria-label="Filtrar por canal">${filters}</div>
+  <div class="board">
+    ${col('prep', 'En preparación', 'Nada en preparación.')}
+    ${col('listo', 'Listo', 'Nada listo para entregar.')}
+    ${col('camino', 'En camino', 'Ningún delivery en la calle.')}
+  </div>
+  <section class="card" style="margin-top:16px" aria-labelledby="h-hist">
+    <h2 id="h-hist" style="margin-bottom:8px">Historial de hoy · ${done.length}</h2>
+    <div class="table-box scroll"><table><thead><tr><th>N.º</th><th>Hora</th><th>Canal</th><th>Detalle</th><th>Estado</th><th class="num">Total</th></tr></thead><tbody>${hist || '<tr><td colspan="6" class="empty">Sin pedidos cerrados.</td></tr>'}</tbody></table></div>
+  </section>`;
+}
+
+/* Caja */
+function renderCaja() {
+  if (S.cash.status !== 'abierta') {
+    const last = S.closes[S.closes.length - 1];
+    return `
+    <div class="view-head"><h1>Caja 1</h1><span class="state-pill state-closed">CERRADA</span></div>
+    <div class="cols">
+      ${last ? `<section class="card wide" aria-labelledby="h-last"><h2 id="h-last" style="margin-bottom:8px">Último cierre · ${last.at} · ${esc(last.by)}</h2>
+        <div class="row"><span>Esperado</span><strong>${fmt(last.expected)}</strong></div>
+        <div class="row"><span>Contado</span><strong>${fmt(last.counted)}</strong></div>
+        <div class="row"><span>Diferencia</span><strong>${fmt(last.counted - last.expected)}</strong></div>
+        ${last.reason ? `<div class="row"><span>Motivo</span><span>${esc(last.reason)}</span></div>` : ''}
+        <p class="muted small" style="margin-top:8px">El cierre quedó guardado y no se puede modificar.</p></section>` : ''}
+      <section class="card narrow" aria-labelledby="h-open" style="display:flex;flex-direction:column;gap:12px">
+        <h2 id="h-open">Abrir caja</h2>
+        <label class="field">Fondo inicial (Gs)<input type="text" inputmode="numeric" data-input="open-fondo" value="${esc(UI.openFondo)}"></label>
+        <button type="button" class="btn btn-primary btn-lg" data-action="open-cash">Abrir caja</button>
+        <p class="muted small">Sin caja abierta no se pueden cobrar pedidos en efectivo.</p>
+      </section>
+    </div>`;
+  }
+  const by = (t) => S.cash.moves.filter((m) => m.type === t);
+  const tot = (t) => sum(by(t), (m) => m.amount);
+  const valid = S.orders.filter((o) => o.status !== 'anulado');
+  const methodTotal = (m) => sum(valid, (o) => sum(o.payments.filter((p) => p.method === m), (p) => p.amount));
+  const appTotal = sum(valid.filter((o) => o.pay === 'app'), (o) => o.total);
+  const moves = S.cash.moves.slice().reverse().map((m) => `<tr><td>${m.time}</td><td>${{ apertura: 'Apertura', cobro: 'Cobro', ingreso: 'Ingreso', gasto: 'Gasto', retiro: 'Retiro', devolucion: 'Devolución' }[m.type]}</td><td>${esc(m.detail)}</td><td>${esc(m.who)}</td><td class="num"><strong>${m.amount >= 0 ? '+ ' + num(m.amount) : '− ' + num(-m.amount)}</strong></td></tr>`).join('');
+  const den = DENOMS.map((d) => `<div class="den"><span>Billete ${num(d)}</span><label><span class="sr">Cantidad de billetes de ${num(d)}</span><input type="text" inputmode="numeric" data-input="aq" data-d="${d}" value="${esc(UI.arqueo[d] || '')}" placeholder="0"></label><span class="sub" id="aq-sub-${d}">Gs 0</span></div>`).join('');
+  return `
+  <div class="view-head"><h1>Caja 1</h1><span class="state-pill state-open">ABIERTA</span><span class="muted small right">Abrió ${esc(S.cash.openedBy)} a las ${S.cash.openedAt}</span></div>
+  <div class="cols">
+    <div class="wide">
+      <section class="card" aria-labelledby="h-ef">
+        <h2 id="h-ef" style="margin-bottom:6px">Efectivo en el cajón</h2>
+        <div class="row"><span>Fondo inicial</span><span>${fmt(tot('apertura'))}</span></div>
+        <div class="row"><span>+ Cobros en efectivo (${by('cobro').length})</span><span>${fmt(tot('cobro'))}</span></div>
+        <div class="row"><span>+ Ingresos manuales</span><span>${fmt(tot('ingreso'))}</span></div>
+        <div class="row"><span>− Devoluciones</span><span>${fmt(-tot('devolucion'))}</span></div>
+        <div class="row"><span>− Retiros</span><span>${fmt(-tot('retiro'))}</span></div>
+        <div class="row"><span>− Gastos pagados con caja</span><span>${fmt(-tot('gasto'))}</span></div>
+        <div class="row" style="font-size:20px;font-weight:700;border-bottom:0"><span>Efectivo esperado</span><span>${fmt(cashExpected())}</span></div>
+        <div class="btn-row" style="margin-top:8px">
+          <button type="button" class="btn btn-outline btn-sm" data-action="move-open" data-kind="ingreso">+ Ingreso</button>
+          <button type="button" class="btn btn-outline btn-sm" data-action="move-open" data-kind="gasto">− Gasto</button>
+          <button type="button" class="btn btn-outline btn-sm" data-action="move-open" data-kind="retiro" ${isAdmin() ? '' : 'disabled'}>Retiro de efectivo</button>
+        </div>
+        ${isAdmin() ? '' : '<p class="muted small" style="margin-top:6px">Los retiros solo los hace el administrador.</p>'}
+      </section>
+      <section class="card" aria-labelledby="h-ot">
+        <h2 id="h-ot">Otros medios (no entran al cajón)</h2>
+        <p class="muted small" style="margin:4px 0 6px">Se controlan contra el extracto del banco o la liquidación de PedidosYa.</p>
+        ${Object.entries(METHODS).filter(([k]) => k !== 'efectivo').map(([k, v]) => `<div class="row"><span>${v}</span><span>${fmt(methodTotal(k))}</span></div>`).join('')}
+        <div class="row"><span>PedidosYa (pago en app)</span><span>${fmt(appTotal)}</span></div>
+      </section>
+      <section class="card" aria-labelledby="h-mv">
+        <h2 id="h-mv" style="margin-bottom:6px">Movimientos de la sesión</h2>
+        <div class="table-box scroll"><table><thead><tr><th>Hora</th><th>Tipo</th><th>Detalle</th><th>Usuario</th><th class="num">Monto</th></tr></thead><tbody>${moves}</tbody></table></div>
+        <p class="muted small" style="margin-top:8px">Los movimientos no se editan ni se borran: un error se corrige con un movimiento inverso.</p>
+      </section>
+    </div>
+    <section class="card narrow arqueo" aria-labelledby="h-aq" style="display:flex;flex-direction:column;gap:10px">
+      <h2 id="h-aq">Cierre de caja · arqueo</h2>
+      <p class="muted small">Contá el efectivo del cajón e ingresá la cantidad de billetes.</p>
+      <div>${den}
+        <div class="den"><span>Monedas (total)</span><label><span class="sr">Total en monedas</span><input type="text" inputmode="numeric" data-input="aq" data-d="monedas" value="${esc(UI.arqueo.monedas || '')}" placeholder="Gs"></label><span class="sub" id="aq-sub-monedas">Gs 0</span></div>
+      </div>
+      <div class="row"><span>Contado</span><strong id="aq-count">Gs 0</strong></div>
+      <div class="row"><span>Esperado</span><strong>${fmt(cashExpected())}</strong></div>
+      <div class="diff" id="aq-diff"><span>Diferencia</span><span>—</span></div>
+      <label class="field">Motivo de la diferencia<textarea data-input="aq-reason" rows="2" placeholder="Obligatorio si hay diferencia">${esc(UI.aqReason)}</textarea></label>
+      <button type="button" class="btn btn-dark btn-lg" id="aq-close" data-action="close-open" disabled>Cerrar caja</button>
+      <p class="muted small" id="aq-hint">Ingresá el conteo para poder cerrar.</p>
+    </section>
+  </div>`;
+}
+
+function arqueoCounted() {
+  const touched = Object.values(UI.arqueo).some((v) => String(v).trim() !== '');
+  const counted = sum(DENOMS, (d) => d * digits(UI.arqueo[d])) + digits(UI.arqueo.monedas);
+  return { touched, counted };
+}
+function updateArqueo() {
+  const { touched, counted } = arqueoCounted();
+  DENOMS.forEach((d) => setText('#aq-sub-' + d, fmt(d * digits(UI.arqueo[d]))));
+  setText('#aq-sub-monedas', fmt(digits(UI.arqueo.monedas)));
+  setText('#aq-count', fmt(counted));
+  const diff = counted - cashExpected();
+  const box = document.getElementById('aq-diff');
+  if (box) {
+    box.className = 'diff' + (touched ? (diff === 0 ? ' good' : ' bad') : '');
+    box.innerHTML = `<span>${!touched ? 'Diferencia' : diff === 0 ? 'Sin diferencia' : diff < 0 ? 'Diferencia · faltante' : 'Diferencia · sobrante'}</span><span>${touched ? fmt(diff) : '—'}</span>`;
+  }
+  const needReason = touched && diff !== 0 && !UI.aqReason.trim();
+  const btn = document.getElementById('aq-close');
+  if (btn) btn.disabled = !touched || needReason;
+  setText('#aq-hint', !touched ? 'Ingresá el conteo para poder cerrar.' : needReason ? 'Escribí el motivo de la diferencia para cerrar.' : 'Al cerrar, la sesión queda bloqueada.');
+}
+
+/* Dashboard */
+function renderDashboard() {
+  const valid = S.orders.filter((o) => o.status !== 'anulado');
+  const ventas = sum(valid, (o) => o.total);
+  const cobrado = sum(valid, (o) => sum(o.payments, (p) => p.amount));
+  const app = sum(valid.filter((o) => o.pay === 'app'), (o) => o.total);
+  const pend = sum(valid.filter((o) => o.pay === 'pendiente'), (o) => o.total);
+  const enCurso = valid.filter(isActive);
+  const late = enCurso.filter((o) => o.status === 'prep' && o.createdAt && Date.now() - o.createdAt > 20 * 60000).length;
+  const prevTotal = sum(PREV_WEEK, (x) => x);
+  const delta = Math.round((ventas - prevTotal) / prevTotal * 100);
+  const kpis = [
+    ['Ventas confirmadas', fmt(ventas), valid.length + ' pedidos · ' + (delta >= 0 ? '+' : '') + delta + '% vs. jueves anterior'],
+    ['Cobrado', fmt(cobrado), '+ ' + fmt(app) + ' pagados en PedidosYa'],
+    ['Pendiente de cobro', fmt(pend), 'pedidos sin cobrar todavía'],
+    ['Efectivo esperado en caja', S.cash.status === 'abierta' ? fmt(cashExpected()) : 'Caja cerrada', 'fondo + cobros − retiros − gastos'],
+    ['Pedidos en curso', String(enCurso.length), late ? late + ' demorado' + (late > 1 ? 's' : '') + ' (+20 min)' : 'ninguno demorado'],
+    ['Ticket promedio', fmt(valid.length ? ventas / valid.length : 0), 'ventas ÷ pedidos']
+  ].map(([l, v, s]) => `<div class="card kpi"><span class="kpi-label">${l}</span><span class="kpi-value">${v}</span><span class="kpi-sub">${s}</span></div>`).join('');
+
+  const cur = HOURS.map((h) => sum(valid.filter((o) => o.hour === h), (o) => o.total));
+  const max = Math.max(1, ...cur, ...PREV_WEEK);
+  const peak = HOURS[cur.indexOf(Math.max(...cur))];
+  const bars = HOURS.map((h, i) => `<div><div class="bar-pair"><span class="bar now" style="height:${cur[i] / max * 100}%" title="Hoy ${h} h: ${fmt(cur[i])}"></span><span class="bar prev" style="height:${PREV_WEEK[i] / max * 100}%" title="Jueves anterior ${h} h: ${fmt(PREV_WEEK[i])}"></span></div><div class="bar-x">${pad(h)} h</div></div>`).join('');
+
+  const methods = Object.entries(METHODS).map(([k, v]) => [v, sum(valid, (o) => sum(o.payments.filter((p) => p.method === k), (p) => p.amount))]).concat([['PedidosYa (pago en app)', app]]);
+  const mmax = Math.max(1, ...methods.map((m) => m[1]));
+  const methodsHtml = methods.map(([l, v]) => `<div style="display:flex;flex-direction:column;gap:4px"><div style="display:flex;justify-content:space-between;font-size:14px"><span>${l}</span><strong>${fmt(v)}</strong></div><div class="meter"><i style="width:${v / mmax * 100}%"></i></div></div>`).join('');
+
+  const counts = {};
+  valid.forEach((o) => o.items.forEach((it) => { counts[it.name] = (counts[it.name] || 0) + it.qty; }));
+  const top = Object.entries(counts).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([n, q]) => `<div class="row"><span>${esc(n)}</span><strong>${q}</strong></div>`).join('');
+  const act = S.log.slice().reverse().slice(0, 6).map((a) => `<div class="row" style="justify-content:flex-start"><span class="muted" style="min-width:44px">${a.time}</span><span style="display:flex;flex-direction:column;gap:2px"><strong style="font-weight:600">${esc(a.what)}</strong><span class="muted small">${esc(a.who)}</span></span></div>`).join('');
+
+  return `
+  <div class="view-head"><h1>Hoy</h1><span class="muted small right">Jornada en curso · caja ${S.cash.status === 'abierta' ? 'abierta desde ' + S.cash.openedAt : 'cerrada'}</span></div>
+  <section class="kpis" aria-label="Indicadores del día">${kpis}</section>
+  <p class="muted small" style="margin-top:8px">La ganancia se mostrará cuando estén cargados los costos de los insumos.</p>
+  <div class="dash-grid">
+    <section class="card big" aria-labelledby="h-h">
+      <div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px"><h2 id="h-h">Ventas por hora</h2><div class="legend"><span><i style="background:var(--red)"></i>Hoy</span><span><i style="background:#CFC6B8"></i>Jueves anterior</span></div></div>
+      <div class="bars" role="img" aria-label="Ventas por hora de 17 a 00 h. La hora pico de hoy es a las ${peak} h.">${bars}</div>
+    </section>
+    <section class="card" aria-labelledby="h-m"><h2 id="h-m">Cobrado por medio de pago</h2>${methodsHtml}<p class="muted small">Solo el efectivo entra al cajón.</p></section>
+  </div>
+  <div class="dash-grid">
+    <section class="card" aria-labelledby="h-t"><h2 id="h-t">Más vendidos hoy</h2><div>${top}</div></section>
+    <section class="card" aria-labelledby="h-s"><h2 id="h-s">Stock bajo <span class="muted small">(estimado · demo)</span></h2>
+      <div class="alert-item"><strong>Mozzarella</strong><span>quedan ~3,2 kg · mínimo 5 kg</span></div>
+      <div class="alert-item"><strong>Cajas de pizza 30 cm</strong><span>quedan 30 u · mínimo 50 u</span></div>
+      <div class="alert-item"><strong>Coca-Cola 1,5 L</strong><span>quedan 4 u · mínimo 12 u</span></div>
+    </section>
+    <section class="card big" aria-labelledby="h-a"><h2 id="h-a">Movimientos que requieren atención</h2><div>${act}</div></section>
+  </div>`;
+}
+
+/* ---------- Modales ---------- */
+function modalWrap(title, body, foot) {
+  return `<div class="modal-back" data-action="modal-backdrop"><div class="modal" role="dialog" aria-modal="true" aria-labelledby="mt">
+    <div class="modal-head"><h2 id="mt" style="font-size:20px">${title}</h2><button type="button" class="icon-btn" data-action="modal-close" aria-label="Cerrar">${X_ICON}</button></div>
+    ${body}${foot ? `<div class="modal-foot">${foot}</div>` : ''}
+  </div></div>`;
+}
+
+function renderModal() {
+  const root = document.getElementById('modal-root');
+  const m = UI.modal;
+  if (!m) { root.innerHTML = ''; return; }
+  const r = { pin: modalPin, product: modalProduct, pay: modalPay, cancel: modalCancel, move: modalMove, close: modalClose, reset: modalReset, ticket: modalTicket, clear: modalClear }[m.kind];
+  const prevFocus = document.activeElement && root.contains(document.activeElement) ? document.activeElement.dataset.focusKey : null;
+  root.innerHTML = r(m);
+  const target = (prevFocus && root.querySelector(`[data-focus-key="${prevFocus}"]`)) || root.querySelector('[data-autofocus]') || root.querySelector('.modal button, .modal input, .modal textarea');
+  if (target) target.focus({ preventScroll: true });
+  if (m.kind === 'pay') updatePay();
+  if (m.kind === 'move') updateMove();
+  if (m.kind === 'cancel') updateCancel();
+}
+
+function modalPin(m) {
+  const u = USERS[m.user];
+  const dots = [0, 1, 2, 3].map((i) => `<span class="${i < m.pin.length ? 'on' : ''}"></span>`).join('');
+  const keys = ['1', '2', '3', '4', '5', '6', '7', '8', '9'].map((k) => `<button type="button" data-action="pin-digit" data-k="${k}" data-focus-key="k${k}">${k}</button>`).join('');
+  return modalWrap('PIN de ' + u.name, `
+    <div class="pin-dots" aria-label="${m.pin.length} de 4 dígitos">${dots}</div>
+    <p class="err" role="alert">${m.error || ''}</p>
+    <div class="keypad">${keys}<button type="button" data-action="pin-del" aria-label="Borrar" data-focus-key="del">⌫</button><button type="button" data-action="pin-digit" data-k="0" data-focus-key="k0">0</button><button type="button" data-action="modal-close">Salir</button></div>
+    <p class="muted small" style="text-align:center">PIN de demostración: ${u.pin}</p>`);
+}
+
+function prodDetail(p, sel) {
+  return (p.groups || []).map((g) => {
+    const s = sel[g.id] || {};
+    const parts = Object.entries(s).filter(([, c]) => c > 0).map(([o, c]) => (c > 1 ? c + '× ' : '') + o);
+    return parts.join(g.pick > 1 ? ' + ' : '');
+  }).filter(Boolean).join(' · ');
+}
+function groupCount(sel, g) { return sum(Object.values(sel[g.id] || {}), (c) => c); }
+function modalProduct(m) {
+  const p = prodById(m.pid);
+  const groups = p.groups.map((g) => {
+    const s = m.sel[g.id] || {};
+    const cnt = groupCount(m.sel, g);
+    const body = g.pick === 1
+      ? `<div class="opts">${g.options.map((o) => `<button type="button" class="opt" data-action="opt-set" data-g="${g.id}" data-o="${esc(o)}" data-focus-key="o-${g.id}-${esc(o)}" aria-pressed="${!!s[o]}">${esc(o)}</button>`).join('')}</div>`
+      : `<div class="counter-grid">${g.options.map((o) => `<div class="counter-row"><span class="n">${esc(o)}</span><button type="button" data-action="opt-dec" data-g="${g.id}" data-o="${esc(o)}" data-focus-key="d-${g.id}-${esc(o)}" aria-label="Quitar ${esc(o)}">−</button><span style="min-width:16px;text-align:center;font-weight:700">${s[o] || 0}</span><button type="button" data-action="opt-inc" data-g="${g.id}" data-o="${esc(o)}" data-focus-key="i-${g.id}-${esc(o)}" aria-label="Agregar ${esc(o)}">+</button></div>`).join('')}</div>`;
+    return `<fieldset class="og"><legend>${g.label} <span class="muted">(${cnt}/${g.pick})</span></legend>${g.pending ? '<span class="pill-warn" style="align-self:flex-start">Sabores incluidos: a confirmar con el dueño</span>' : ''}${body}</fieldset>`;
+  }).join('');
+  const missing = p.groups.reduce((s, g) => s + (g.pick - groupCount(m.sel, g)), 0);
+  return modalWrap(esc(p.name), `
+    <p class="muted">${fmt(p.price)}${p.desc ? ' · ' + esc(p.desc) : ''}</p>
+    ${groups}
+    <label class="field">Nota (opcional)<input type="text" data-input="pm-note" data-focus-key="note" value="${esc(m.note)}" placeholder="Ej: sin cebolla"></label>
+    <div style="display:flex;align-items:center;justify-content:space-between"><span style="font-weight:700">Cantidad</span><div class="qty"><button type="button" data-action="pm-dec" data-focus-key="qd" aria-label="Menos">−</button><span>${m.qty}</span><button type="button" data-action="pm-inc" data-focus-key="qi" aria-label="Más">+</button></div></div>`,
+    `<button type="button" class="btn btn-outline btn-lg" data-action="modal-close">Cancelar</button>
+     <button type="button" class="btn btn-primary btn-lg" data-action="pm-add" data-focus-key="add" ${missing ? 'disabled' : ''}>${missing ? 'Falta elegir ' + missing : 'Agregar · ' + fmt(p.price * m.qty)}</button>`);
+}
+
+function payCalc(m) {
+  const others = sum(m.lines.slice(1), (l) => l.amount || 0);
+  const l0 = m.total - others;
+  const ci = m.lines.findIndex((l) => l.method === 'efectivo');
+  const cashAmt = ci < 0 ? 0 : (ci === 0 ? l0 : (m.lines[ci].amount || 0));
+  const rec = String(m.received).trim() === '' ? cashAmt : digits(m.received);
+  return { l0, cashAmt, rec, change: rec - cashAmt };
+}
+function payError(m, c) {
+  if (c.l0 <= 0) return 'Los montos superan el total.';
+  if (m.lines.slice(1).some((l) => !l.amount)) return 'Ingresá el monto de cada medio de pago.';
+  if (c.cashAmt > 0 && S.cash.status !== 'abierta') return 'La caja está cerrada: abrila para cobrar en efectivo.';
+  if (c.cashAmt > 0 && c.rec < c.cashAmt) return 'El efectivo recibido no alcanza.';
+  return '';
+}
+function modalPay(m) {
+  const o = m.orderId ? S.orders.find((x) => x.id === m.orderId) : null;
+  const lines = m.lines.map((l, i) => `
+    <div class="pay-line">
+      <div class="seg" role="group" aria-label="Medio de pago">${Object.entries(METHODS).map(([k, v]) => `<button type="button" data-action="pay-method" data-line="${i}" data-m="${k}" data-focus-key="pm-${i}-${k}" aria-pressed="${l.method === k}">${v}</button>`).join('')}</div>
+      ${m.lines.length > 1 ? (i === 0
+        ? `<div class="pay-line-foot"><span>Resto del total</span><strong id="pay-l0"></strong></div>`
+        : `<div class="pay-line-foot"><label class="field" style="flex:1">Monto<input type="text" inputmode="numeric" data-input="pay-amount" data-line="${i}" data-focus-key="pa-${i}" value="${l.amount ? l.amount : ''}" placeholder="Gs"></label><button type="button" class="btn-text" data-action="pay-remove" data-line="${i}">Quitar</button></div>`) : ''}
+    </div>`).join('');
+  const hasCash = m.lines.some((l) => l.method === 'efectivo');
+  const c = payCalc(m);
+  const quick = [['Exacto', ''], ['50.000', '50000'], ['100.000', '100000'], ['200.000', '200000']].filter(([, v]) => !v || +v >= c.cashAmt);
+  return modalWrap(o ? 'Cobrar pedido #' + pad4(o.num) : 'Cobrar pedido #' + pad4(S.nextNum), `
+    <div class="pay-total"><span>Total</span><strong>${fmt(m.total)}</strong></div>
+    ${lines}
+    ${m.lines.length < 3 ? '<button type="button" class="link" data-action="pay-add">+ Pago mixto: agregar otro medio</button>' : ''}
+    ${hasCash ? `<div class="cash-box">
+      <label class="field">Recibido en efectivo<input type="text" inputmode="numeric" data-input="pay-received" data-focus-key="rec" value="${esc(m.received)}" placeholder="Exacto"></label>
+      <div class="quick">${quick.map(([l, v]) => `<button type="button" data-action="pay-quick" data-v="${v}">${l}</button>`).join('')}</div>
+      <div class="change">Vuelto: <strong id="pay-change"></strong></div>
+    </div>` : ''}
+    <p class="status-msg" id="pay-status" role="alert"></p>`,
+    `<button type="button" class="btn btn-outline btn-lg" data-action="modal-close">Cancelar</button>
+     <button type="button" class="btn btn-primary btn-lg" id="pay-ok" data-action="pay-confirm">Registrar cobro</button>`);
+}
+function updatePay() {
+  const m = UI.modal;
+  if (!m || m.kind !== 'pay') return;
+  const c = payCalc(m);
+  setText('#pay-l0', fmt(Math.max(c.l0, 0)));
+  setText('#pay-change', fmt(Math.max(c.change, 0)));
+  const err = payError(m, c);
+  setText('#pay-status', err);
+  const ok = document.getElementById('pay-ok');
+  if (ok) ok.disabled = !!err;
+}
+
+function modalCancel(m) {
+  const o = S.orders.find((x) => x.id === m.id);
+  const paidCash = o.pay === 'pagado' && o.payments.some((p) => p.method === 'efectivo');
+  return modalWrap('Anular pedido #' + pad4(o.num), `
+    <p>${esc(itemsText(o))} · <strong>${fmt(o.total)}</strong></p>
+    <p class="muted small">El pedido no se borra: queda en el historial como anulado, con el motivo y quién lo anuló.${paidCash ? ' Como se cobró en efectivo, se registra la devolución en caja.' : ''}</p>
+    <label class="field">Motivo (obligatorio)<input type="text" data-input="cancel-reason" data-focus-key="cr" value="${esc(m.reason)}" placeholder="Ej: el cliente canceló" data-autofocus></label>
+    ${isAdmin() ? '' : `<label class="field">PIN del administrador<input type="password" inputmode="numeric" maxlength="4" data-input="cancel-pin" data-focus-key="cp" value="${esc(m.pin)}" autocomplete="off"></label><p class="muted small">Demo: el PIN del dueño es 1111.</p>`}
+    <p class="status-msg" id="cancel-status" role="alert"></p>`,
+    `<button type="button" class="btn btn-outline btn-lg" data-action="modal-close">Volver</button>
+     <button type="button" class="btn btn-primary btn-lg" id="cancel-ok" data-action="cancel-confirm">Anular pedido</button>`);
+}
+function cancelError(m) {
+  if (!m.reason.trim()) return 'Escribí el motivo.';
+  if (!isAdmin() && m.pin.length < 4) return 'Falta el PIN del administrador.';
+  return '';
+}
+function updateCancel() {
+  const m = UI.modal;
+  const err = cancelError(m);
+  const ok = document.getElementById('cancel-ok');
+  if (ok) ok.disabled = !!err;
+  setText('#cancel-status', m.tried ? err : '');
+}
+
+const MOVE_KINDS = {
+  ingreso: { title: 'Registrar ingreso', hint: 'Dinero que entra al cajón y no es una venta. Ej: cambio traído del banco.', sign: 1 },
+  gasto: { title: 'Registrar gasto', hint: 'Pago hecho con efectivo del cajón. Ej: hielo, gas, un proveedor.', sign: -1 },
+  retiro: { title: 'Retiro de efectivo', hint: 'Dinero que sale del cajón hacia el dueño o el banco.', sign: -1 }
+};
+function modalMove(m) {
+  const k = MOVE_KINDS[m.moveKind];
+  return modalWrap(k.title, `
+    <p class="muted small">${k.hint}</p>
+    <label class="field">Monto (Gs)<input type="text" inputmode="numeric" data-input="mv-amount" data-focus-key="ma" value="${esc(m.amount)}" data-autofocus></label>
+    <label class="field">Motivo (obligatorio)<input type="text" data-input="mv-reason" data-focus-key="mr" value="${esc(m.reason)}"></label>
+    <p class="status-msg" id="mv-status" role="alert"></p>`,
+    `<button type="button" class="btn btn-outline btn-lg" data-action="modal-close">Cancelar</button>
+     <button type="button" class="btn btn-primary btn-lg" id="mv-ok" data-action="move-confirm">Registrar</button>`);
+}
+function moveError(m) {
+  const a = digits(m.amount);
+  if (!a) return 'Ingresá el monto.';
+  if (MOVE_KINDS[m.moveKind].sign < 0 && a > cashExpected()) return 'No hay tanto efectivo en el cajón (' + fmt(cashExpected()) + ').';
+  if (!m.reason.trim()) return 'Escribí el motivo.';
+  return '';
+}
+function updateMove() {
+  const m = UI.modal;
+  const err = moveError(m);
+  const ok = document.getElementById('mv-ok');
+  if (ok) ok.disabled = !!err;
+  setText('#mv-status', digits(m.amount) ? err : '');
+}
+
+function modalClose() {
+  const { counted } = arqueoCounted();
+  const exp = cashExpected();
+  return modalWrap('¿Cerrar la caja?', `
+    <div class="row"><span>Esperado</span><strong>${fmt(exp)}</strong></div>
+    <div class="row"><span>Contado</span><strong>${fmt(counted)}</strong></div>
+    <div class="row"><span>Diferencia</span><strong>${fmt(counted - exp)}</strong></div>
+    <p class="muted small">Después de cerrar no se pueden agregar movimientos a esta sesión. Para seguir cobrando en efectivo hay que abrir una caja nueva.</p>`,
+    `<button type="button" class="btn btn-outline btn-lg" data-action="modal-close">Volver</button>
+     <button type="button" class="btn btn-dark btn-lg" data-action="close-confirm" data-autofocus>Cerrar caja</button>`);
+}
+
+function modalReset() {
+  return modalWrap('¿Reiniciar la demo?', `<p>Se borran los pedidos y movimientos que cargaste y vuelven los datos de ejemplo.</p>`,
+    `<button type="button" class="btn btn-outline btn-lg" data-action="modal-close">Cancelar</button>
+     <button type="button" class="btn btn-primary btn-lg" data-action="reset-confirm" data-autofocus>Reiniciar</button>`);
+}
+
+function modalClear() {
+  return modalWrap('¿Cancelar la venta?', '<p>Se vacía el comprobante actual. No se registra nada en caja.</p>',
+    `<button type="button" class="btn btn-outline btn-lg" data-action="modal-close">Volver</button>
+     <button type="button" class="btn btn-primary btn-lg" data-action="cobro-clear-confirm" data-autofocus>Cancelar venta</button>`);
+}
+
+function modalTicket(m) {
+  const o = S.orders.find((x) => x.id === m.id);
+  const b = o.iva || ivaBreakdown(o.items, o.discount);
+  const d = new Date(o.createdAt || Date.now());
+  const line = (l, r) => `<div class="t-row"><span>${l}</span><span>${r}</span></div>`;
+  const items = o.items.map((it) => `<div>${it.qty} x ${esc(it.name)}${it.detail ? ' (' + esc(it.detail) + ')' : ''}</div>${line('&nbsp;&nbsp;' + num(it.price) + ' c/u · IVA ' + (it.iva ?? 10) + '%', num(it.price * it.qty))}`).join('');
+  const pays = o.payments.map((p) => line(METHODS[p.method], num(p.amount))).join('') + (o.change ? line('Vuelto', num(o.change)) : '');
+  return modalWrap('Ticket de la venta', `
+    <div class="ticket" id="ticket">
+      <div class="t-center"><strong style="font-size:16px">RomiPizza</strong><br>ARTESANAL<br>Lambaré · Paraguay</div>
+      <div class="t-sep"></div>
+      <div class="t-center"><strong>TICKET INTERNO</strong><br>NO VÁLIDO COMO FACTURA</div>
+      <div class="t-sep"></div>
+      ${line('Pedido', '#' + pad4(o.num))}
+      ${line('Fecha', pad(d.getDate()) + '/' + pad(d.getMonth() + 1) + '/' + d.getFullYear() + ' ' + o.time)}
+      ${line('Atendió', esc(o.by))}
+      ${line('Tipo', TYPES[o.type])}
+      ${line('Cliente', esc(o.customer.name || 'Sin nombre'))}
+      ${o.ruc ? line('RUC/CI', esc(o.ruc)) : ''}
+      <div class="t-sep"></div>
+      ${items}
+      <div class="t-sep"></div>
+      ${line('Subtotal', num(b.gross))}
+      ${b.discount ? line('Descuento', '-' + num(b.discount)) : ''}
+      <div class="t-row" style="font-size:16px"><strong>TOTAL Gs</strong><strong>${num(b.total)}</strong></div>
+      <div class="t-sep"></div>
+      ${pays}
+      <div class="t-sep"></div>
+      <div><strong>Liquidación del IVA</strong></div>
+      ${line('Exentas', num(b.ex))}
+      ${line('Gravadas 5%', num(b.g5))}
+      ${line('Gravadas 10%', num(b.g10))}
+      ${line('IVA 5%', num(b.iva5))}
+      ${line('IVA 10%', num(b.iva10))}
+      ${line('Total IVA', num(b.ivaTotal))}
+      <div class="t-sep"></div>
+      <div class="t-center">¡Gracias por elegirnos!<br>DEMO · datos ficticios</div>
+    </div>`,
+    `<button type="button" class="btn btn-outline btn-lg" data-action="modal-close" data-autofocus>Listo</button>
+     <button type="button" class="btn btn-primary btn-lg" data-action="ticket-print">Imprimir</button>`);
+}
+
+/* ---------- Helpers de UI ---------- */
+function setText(sel, t) { const el = document.querySelector(sel); if (el) el.textContent = t; }
+let toastTimer = null;
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => t.classList.remove('show'), 2600);
+}
+function closeModal() { UI.modal = null; renderModal(); }
+
+/* ---------- Eventos ---------- */
+document.addEventListener('click', (e) => {
+  const el = e.target.closest('[data-action]');
+  if (!el || el.disabled) return;
+  const a = el.dataset.action;
+  if (a === 'modal-backdrop') { if (e.target === el) closeModal(); return; }
+  const m = UI.modal;
+  switch (a) {
+    case 'modal-close': closeModal(); break;
+    case 'reset-open': UI.modal = { kind: 'reset' }; renderModal(); break;
+    case 'reset-confirm':
+      try { localStorage.removeItem(LS_KEY); } catch (err) { /* nada */ }
+      S = seed();
+      Object.assign(UI, { view: null, cat: 'promos', q: '', cartOpen: false, filter: 'todos', modal: null, arqueo: {}, aqReason: '', openFondo: '200000' });
+      render(); toast('Demo reiniciada');
+      break;
+
+    case 'login-pick': UI.modal = { kind: 'pin', user: el.dataset.user, pin: '', error: '' }; renderModal(); break;
+    case 'pin-digit':
+      if (m.pin.length >= 4) break;
+      m.pin += el.dataset.k; m.error = '';
+      if (m.pin.length === 4) {
+        const u = USERS[m.user];
+        if (m.pin === u.pin) {
+          S.user = { name: u.name, role: u.role, roleLabel: u.roleLabel };
+          UI.modal = null; UI.view = null; save(); render(); toast('Hola, ' + u.name);
+          break;
+        }
+        m.pin = ''; m.error = 'PIN incorrecto';
+      }
+      renderModal();
+      break;
+    case 'pin-del': m.pin = m.pin.slice(0, -1); renderModal(); break;
+    case 'logout': S.user = null; UI.view = null; save(); render(); break;
+
+    case 'nav': UI.view = el.dataset.view; UI.cartOpen = false; render(); window.scrollTo(0, 0); break;
+    case 'cat': UI.cat = el.dataset.cat; UI.q = ''; render(); break;
+    case 'pick': {
+      const p = prodById(el.dataset.id);
+      if (p.groups) { UI.modal = { kind: 'product', pid: p.id, sel: {}, qty: 1, note: '' }; renderModal(); }
+      else { addToCart(p, '', '', 1); render(); toast(p.name + ' agregado'); }
+      break;
+    }
+    case 'opt-set': m.sel[el.dataset.g] = { [el.dataset.o]: 1 }; renderModal(); break;
+    case 'opt-inc': {
+      const p = prodById(m.pid);
+      const g = p.groups.find((x) => x.id === el.dataset.g);
+      const s = m.sel[g.id] = m.sel[g.id] || {};
+      const c = s[el.dataset.o] || 0;
+      if (groupCount(m.sel, g) < g.pick && (g.repeat || c < 1)) s[el.dataset.o] = c + 1;
+      renderModal();
+      break;
+    }
+    case 'opt-dec': { const s = m.sel[el.dataset.g] || {}; if (s[el.dataset.o]) s[el.dataset.o]--; renderModal(); break; }
+    case 'pm-inc': m.qty++; renderModal(); break;
+    case 'pm-dec': if (m.qty > 1) m.qty--; renderModal(); break;
+    case 'pm-add': {
+      const p = prodById(m.pid);
+      addToCart(p, prodDetail(p, m.sel), m.note.trim(), m.qty);
+      UI.modal = null; render(); toast(p.name + ' agregado');
+      break;
+    }
+    case 'cart-inc': S.cart.items[+el.dataset.i].qty++; save(); render(); break;
+    case 'cart-dec': {
+      const it = S.cart.items[+el.dataset.i];
+      if (it.qty > 1) it.qty--; else S.cart.items.splice(+el.dataset.i, 1);
+      if (!S.cart.items.length) UI.cartOpen = false;
+      save(); render();
+      break;
+    }
+    case 'type': S.cart.type = el.dataset.type; save(); render(); break;
+    case 'cart-open': UI.cartOpen = true; render(); break;
+    case 'cart-close': UI.cartOpen = false; render(); break;
+    case 'confirm-order': createOrder(null); render(); break;
+    case 'cobro-process': cobroProcess(); break;
+    case 'cart-remove': S.cart.items.splice(+el.dataset.i, 1); if (!S.cart.items.length) S.cart.discount = 0; save(); render(); break;
+    case 'cobro-qty-inc': UI.cobroQty = String(Math.max(1, digits(UI.cobroQty)) + 1); render(); break;
+    case 'cobro-qty-dec': UI.cobroQty = String(Math.max(1, digits(UI.cobroQty) - 1)); render(); break;
+    case 'cobro-add': {
+      const p = prodById(UI.cobroSel);
+      const qty = Math.max(1, digits(UI.cobroQty));
+      if (p.groups) { UI.modal = { kind: 'product', pid: p.id, sel: {}, qty, note: '' }; renderModal(); break; }
+      addToCart(p, '', '', qty); UI.cobroQty = '1'; render(); toast(qty + ' × ' + p.name + ' agregado');
+      break;
+    }
+    case 'cobro-clear-open': UI.modal = { kind: 'clear' }; renderModal(); break;
+    case 'cobro-clear-confirm': S.cart = newCart(); UI.modal = null; save(); render(); toast('Venta cancelada'); break;
+    case 'ticket-print': window.print(); break;
+
+    case 'pay-method': {
+      const i = +el.dataset.line, k = el.dataset.m;
+      if (k === 'efectivo' && m.lines.some((l, j) => j !== i && l.method === 'efectivo')) { toast('Ya hay un pago en efectivo'); break; }
+      m.lines[i].method = k;
+      if (!m.lines.some((l) => l.method === 'efectivo')) m.received = '';
+      renderModal();
+      break;
+    }
+    case 'pay-add': {
+      const used = m.lines.map((l) => l.method);
+      const next = ['transferencia', 'tarjeta', 'qr', 'efectivo'].find((k) => !used.includes(k));
+      m.lines.push({ method: next, amount: 0 });
+      renderModal();
+      break;
+    }
+    case 'pay-remove': m.lines.splice(+el.dataset.line, 1); if (!m.lines.some((l) => l.method === 'efectivo')) m.received = ''; renderModal(); break;
+    case 'pay-quick': m.received = el.dataset.v; renderModal(); break;
+    case 'pay-confirm': {
+      const c = payCalc(m);
+      if (payError(m, c)) break;
+      const payments = [{ method: m.lines[0].method, amount: c.l0 }].concat(m.lines.slice(1).map((l) => ({ method: l.method, amount: l.amount }))).filter((p) => p.amount > 0);
+      const change = c.change > 0 ? ' · vuelto ' + fmt(c.change) : '';
+      if (m.orderId) {
+        const o = S.orders.find((x) => x.id === m.orderId);
+        o.payments = payments; o.pay = 'pagado';
+        registerCash(o, payments);
+        if (m.thenDeliver) o.status = 'entregado';
+        UI.modal = null; save(); render();
+        toast('Pedido #' + pad4(o.num) + ' cobrado' + (m.thenDeliver ? ' y entregado' : '') + change);
+      } else {
+        const print = S.cart.printTicket;
+        const o = createOrder(payments, Math.max(c.change, 0));
+        UI.modal = print ? { kind: 'ticket', id: o.id } : null;
+        if (UI.view === 'cobro') UI.view = 'venta';
+        render();
+      }
+      break;
+    }
+
+    case 'filter': UI.filter = el.dataset.f; render(); break;
+    case 'adv': {
+      const o = S.orders.find((x) => x.id === el.dataset.id);
+      if (o.status === 'prep') { o.status = 'listo'; toast('#' + pad4(o.num) + ' listo'); }
+      else if (o.status === 'listo' && goesOut(o)) { o.status = 'camino'; toast('#' + pad4(o.num) + ' en camino'); }
+      else if (o.pay === 'pendiente') { UI.modal = { kind: 'pay', total: o.total, orderId: o.id, thenDeliver: true, lines: [{ method: 'efectivo', amount: 0 }], received: '' }; renderModal(); break; }
+      else { o.status = 'entregado'; toast('#' + pad4(o.num) + ' entregado'); }
+      save(); render();
+      break;
+    }
+    case 'cancel-open': UI.modal = { kind: 'cancel', id: el.dataset.id, reason: '', pin: '', tried: false }; renderModal(); break;
+    case 'cancel-confirm': {
+      m.tried = true;
+      if (cancelError(m)) { updateCancel(); break; }
+      if (!isAdmin() && m.pin !== USERS.admin.pin) { setText('#cancel-status', 'PIN del administrador incorrecto.'); break; }
+      const o = S.orders.find((x) => x.id === m.id);
+      if (o.pay === 'pagado') {
+        o.payments.filter((p) => p.method === 'efectivo').forEach((p) => {
+          if (S.cash.status === 'abierta') addMove('devolucion', 'Anulación #' + pad4(o.num), -p.amount);
+        });
+        o.pay = 'devuelto';
+      }
+      o.status = 'anulado'; o.cancelReason = m.reason.trim();
+      logEv('Anulación del pedido #' + pad4(o.num) + ' · ' + fmt(o.total), o.cancelReason + (isAdmin() ? '' : ' · autorizó Dueño'));
+      UI.modal = null; save(); render(); toast('Pedido #' + pad4(o.num) + ' anulado');
+      break;
+    }
+
+    case 'move-open': UI.modal = { kind: 'move', moveKind: el.dataset.kind, amount: '', reason: '' }; renderModal(); break;
+    case 'move-confirm': {
+      if (moveError(m)) break;
+      const k = MOVE_KINDS[m.moveKind];
+      const amount = digits(m.amount);
+      addMove(m.moveKind, m.reason.trim(), k.sign * amount);
+      logEv(k.title.replace('Registrar ', '').replace(/^./, (c) => c.toUpperCase()) + ' · ' + fmt(amount), m.reason.trim());
+      UI.modal = null; save(); render(); toast('Movimiento registrado');
+      break;
+    }
+    case 'close-open': UI.modal = { kind: 'close' }; renderModal(); break;
+    case 'close-confirm': {
+      const { counted } = arqueoCounted();
+      const expected = cashExpected();
+      S.closes.push({ at: clock(new Date()), by: S.user.name, expected, counted, reason: UI.aqReason.trim() });
+      logEv('Cierre de caja · diferencia ' + fmt(counted - expected), UI.aqReason.trim());
+      S.cash = { status: 'cerrada', moves: [] };
+      UI.arqueo = {}; UI.aqReason = ''; UI.modal = null;
+      save(); render(); toast('Caja cerrada');
+      break;
+    }
+    case 'open-cash': {
+      const fondo = digits(UI.openFondo);
+      const now = clock(new Date());
+      S.cash = { status: 'abierta', openedAt: now, openedBy: S.user.name, moves: [] };
+      addMove('apertura', 'Fondo inicial', fondo);
+      logEv('Apertura de caja · fondo ' + fmt(fondo));
+      save(); render(); toast('Caja abierta');
+      break;
+    }
+  }
+});
+
+function addToCart(p, detail, note, qty) {
+  const ex = S.cart.items.find((it) => it.pid === p.id && it.detail === detail && it.note === note);
+  if (ex) ex.qty += qty;
+  else S.cart.items.push({ pid: p.id, name: p.name, price: p.price, iva: p.iva, qty, detail, note });
+  save();
+}
+
+function cobroProcess() {
+  const c = S.cart;
+  if (!c.items.length || UI.modal) return;
+  if (c.type === 'pedidosya' && c.appPaid) {
+    const o = createOrder(null);
+    UI.modal = c.printTicket ? { kind: 'ticket', id: o.id } : null;
+    UI.view = 'venta';
+    render();
+    return;
+  }
+  UI.modal = { kind: 'pay', total: cartTotal(), orderId: null, lines: [{ method: 'efectivo', amount: 0 }], received: '' };
+  renderModal();
+}
+
+document.addEventListener('input', (e) => {
+  const el = e.target;
+  const k = el.dataset && el.dataset.input;
+  if (!k) return;
+  const m = UI.modal;
+  switch (k) {
+    case 'search': UI.q = el.value; applyProductFilter(); break;
+    case 'cust': S.cart.customer[el.dataset.field] = el.value; save(); break;
+    case 'cart-note': S.cart.note = el.value; save(); break;
+    case 'pm-note': m.note = el.value; break;
+    case 'pay-amount': m.lines[+el.dataset.line].amount = digits(el.value); updatePay(); break;
+    case 'pay-received': m.received = el.value; updatePay(); break;
+    case 'aq': UI.arqueo[el.dataset.d] = el.value; updateArqueo(); break;
+    case 'aq-reason': UI.aqReason = el.value; updateArqueo(); break;
+    case 'mv-amount': m.amount = el.value; updateMove(); break;
+    case 'mv-reason': m.reason = el.value; updateMove(); break;
+    case 'cancel-reason': m.reason = el.value; updateCancel(); break;
+    case 'cancel-pin': m.pin = el.value.replace(/\D/g, ''); updateCancel(); break;
+    case 'open-fondo': UI.openFondo = el.value; break;
+    case 'ruc': S.cart.ruc = el.value; save(); break;
+    case 'cobro-qty': UI.cobroQty = el.value.replace(/\D/g, ''); break;
+    case 'cobro-sel': { UI.cobroSel = el.value; const p = prodById(el.value); setText('#cobro-price', fmt(p.price)); break; }
+  }
+});
+document.addEventListener('change', (e) => {
+  const k = e.target.dataset && e.target.dataset.input;
+  if (k === 'app-paid') { S.cart.appPaid = e.target.checked; save(); render(); }
+  else if (k === 'print-ticket') { S.cart.printTicket = e.target.checked; save(); }
+  else if (k === 'cobro-type') { S.cart.type = e.target.value; save(); render(); }
+  else if (k === 'discount') {
+    const v = digits(e.target.value);
+    const gross = cartGross();
+    if (v >= gross && gross > 0) toast('El descuento no puede ser igual o mayor al subtotal');
+    S.cart.discount = v >= gross ? 0 : v;
+    save(); render();
+  }
+});
+document.addEventListener('keydown', (e) => {
+  if (S.user && UI.view === 'cobro' && !UI.modal && (e.key === 'F9' || e.key === 'F3')) {
+    e.preventDefault();
+    if (e.key === 'F9') cobroProcess();
+    else if (S.cart.items.length) { UI.modal = { kind: 'clear' }; renderModal(); }
+    return;
+  }
+  if (e.key === 'Escape' && UI.modal) closeModal();
+  else if (e.key === 'Escape' && UI.cartOpen) { UI.cartOpen = false; render(); }
+});
+setInterval(() => { if (S.user && UI.view === 'pedidos' && !UI.modal) render(); }, 60000);
+
+render();
+</script>
+</body>
+</html>
